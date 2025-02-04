@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Calming turquoise theme - light mode */
+  --background: 175 30% 98%;
+  --foreground: 180 40% 20%;
+  
+  --card: 175 30% 99%;
+  --card-foreground: 180 40% 20%;
+  
+  --popover: 175 30% 99%;
+  --popover-foreground: 180 40% 20%;
+  
+  --primary: 175 60% 35%;
+  --primary-foreground: 175 30% 98%;
+  
+  --secondary: 180 30% 95%;
+  --secondary-foreground: 180 40% 30%;
+  
+  --muted: 180 20% 94%;
+  --muted-foreground: 180 30% 40%;
+  
+  --accent: 175 40% 90%;
+  --accent-foreground: 180 40% 20%;
+  
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 175 30% 98%;
+  
+  --border: 175 30% 90%;
+  --input: 175 30% 90%;
+  --ring: 175 60% 35%;
+  
+  --radius: 0.75rem;
+}
+
+.dark {
+  /* Calming turquoise theme - dark mode */
+  --background: 180 30% 10%;
+  --foreground: 175 30% 98%;
+  
+  --card: 180 30% 15%;
+  --card-foreground: 175 30% 98%;
+  
+  --popover: 180 30% 15%;
+  --popover-foreground: 175 30% 98%;
+  
+  --primary: 175 60% 50%;
+  --primary-foreground: 180 40% 10%;
+  
+  --secondary: 180 30% 20%;
+  --secondary-foreground: 175 30% 98%;
+  
+  --muted: 180 30% 20%;
+  --muted-foreground: 175 20% 80%;
+  
+  --accent: 180 30% 25%;
+  --accent-foreground: 175 30% 98%;
+  
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 175 30% 98%;
+  
+  --border: 180 30% 25%;
+  --input: 180 30% 25%;
+  --ring: 175 60% 50%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.modal-overlay {
+  @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+}
+
+.modal-content {
+  @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
+         w-11/12 max-w-3xl max-h-[90vh] overflow-y-auto
+         bg-card rounded-lg shadow-xl z-50
+         p-6 space-y-4;
+}
+
+.card-expanded {
+  @apply transform transition-all duration-300 ease-in-out hover:scale-[1.02];
+}
+
+.image-gallery {
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-4;
+}
+
+.image-gallery img {
+  @apply rounded-lg object-cover w-full h-48 hover:opacity-90 transition-all duration-300
+         hover:shadow-lg hover:scale-[1.02];
+}
+
+.sacred-quote {
+  @apply italic text-lg text-muted-foreground border-l-4 border-primary pl-4 my-4
+         hover:border-l-8 transition-all duration-300;
+}
+
+.timeline-item {
+  @apply relative pl-8 pb-8 border-l-2 border-primary last:border-0
+         hover:border-l-4 transition-all duration-300;
+}
+
+.timeline-dot {
+  @apply absolute -left-[9px] w-4 h-4 rounded-full bg-primary
+         hover:scale-110 transition-transform duration-300;
+}
+
+/* Enhanced Responsive Design */
+@layer utilities {
+  .nav-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300;
+  }
+
+  .content-grid {
+    @apply grid gap-6 transition-all duration-300
+           grid-cols-1 
+           sm:grid-cols-2 
+           lg:grid-cols-3 
+           xl:grid-cols-4;
+  }
+
+  .card-hover {
+    @apply hover:shadow-lg hover:scale-[1.02] 
+           transition-all duration-300 
+           cursor-pointer;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Loading Skeleton Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.loading-skeleton {
+  @apply bg-gradient-to-r from-transparent via-muted to-transparent
+         bg-[length:200%_100%] animate-[shimmer_2s_infinite];
+}
