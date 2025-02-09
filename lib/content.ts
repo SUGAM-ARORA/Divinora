@@ -226,3 +226,166 @@ export const bhaktiVideos = [
     channel: "Sacred Chants",
   },
 ];
+
+export const festivals = [
+  {
+    id: 1,
+    name: "Diwali",
+    date: "November 12, 2024",
+    description: "The festival of lights, symbolizing the victory of light over darkness.",
+    significance: [
+      "Marks Lord Rama’s return to Ayodhya after defeating Ravana.",
+      "Represents spiritual enlightenment and victory over ignorance.",
+    ],
+    rituals: [
+      "Lighting diyas and candles in homes.",
+      "Worship of Goddess Lakshmi for prosperity.",
+      "Bursting fireworks to celebrate joy and victory.",
+    ],
+  },
+  {
+    id: 2,
+    name: "Ramadan",
+    date: "March 10 - April 9, 2024",
+    description: "The holy month of fasting, prayer, and reflection in Islam.",
+    significance: [
+      "Commemorates the first revelation of the Quran to Prophet Muhammad.",
+      "A time for spiritual reflection and increased devotion.",
+    ],
+    rituals: [
+      "Fasting from dawn to sunset (Sawm).",
+      "Offering special Taraweeh prayers.",
+      "Breaking fast with dates and a meal (Iftar).",
+    ],
+  },
+  {
+    id: 3,
+    name: "Christmas",
+    date: "December 25, 2024",
+    description: "Celebration of the birth of Jesus Christ in Christianity.",
+    significance: [
+      "Marks the birth of Jesus Christ, the Son of God.",
+      "Symbolizes love, joy, and the spirit of giving.",
+    ],
+    rituals: [
+      "Attending Midnight Mass at churches.",
+      "Decorating Christmas trees and homes.",
+      "Exchanging gifts and sharing festive meals.",
+    ],
+  },
+  {
+    id: 4,
+    name: "Hanukkah",
+    date: "December 25 - January 2, 2025",
+    description: "The Jewish festival of lights celebrating the rededication of the Temple.",
+    significance: [
+      "Commemorates the miracle of the Temple’s oil lasting eight days.",
+      "A celebration of faith and perseverance.",
+    ],
+    rituals: [
+      "Lighting the menorah for eight nights.",
+      "Reciting blessings and prayers.",
+      "Eating fried foods like latkes and sufganiyot.",
+    ],
+  },
+  {
+    id: 5,
+    name: "Vesak",
+    date: "May 23, 2024",
+    description: "The most important Buddhist festival, marking Buddha’s birth, enlightenment, and passing.",
+    significance: [
+      "Celebrates the life and teachings of Buddha.",
+      "Encourages mindfulness, compassion, and charity.",
+    ],
+    rituals: [
+      "Visiting temples and making offerings.",
+      "Observing meditation and noble silence.",
+      "Releasing caged birds and fish as a symbol of liberation.",
+    ],
+  },
+];
+
+
+export const navagrahas = [
+  {
+    id: 1,
+    name: "Surya (Sun)",
+    ruling_day: "Sunday",
+    description: "Represents power, leadership, and self-expression.",
+    mantras: ["Om Hrim Sum Suryaya Namah"],
+    significance: "Gives energy, health, and success.",
+    gemstone: "Ruby",
+  },
+  {
+    id: 2,
+    name: "Chandra (Moon)",
+    ruling_day: "Monday",
+    description: "Symbolizes emotions, intuition, and the mind.",
+    mantras: ["Om Som Somaya Namah"],
+    significance: "Improves mental peace and emotional balance.",
+    gemstone: "Pearl",
+  },
+  {
+    id: 3,
+    name: "Mangala (Mars)",
+    ruling_day: "Tuesday",
+    description: "Represents energy, courage, and physical strength.",
+    mantras: ["Om Ang Angarakaya Namah"],
+    significance: "Enhances courage and determination.",
+    gemstone: "Red Coral",
+  },
+  {
+    id: 4,
+    name: "Budha (Mercury)",
+    ruling_day: "Wednesday",
+    description: "Symbolizes intellect, communication, and logic.",
+    mantras: ["Om Bum Budhaya Namah"],
+    significance: "Improves intelligence and communication skills.",
+    gemstone: "Emerald",
+  },
+  {
+    id: 5,
+    name: "Guru (Jupiter)",
+    ruling_day: "Thursday",
+    description: "Represents wisdom, knowledge, and spirituality.",
+    mantras: ["Om Brim Brihaspataye Namah"],
+    significance: "Brings wisdom, prosperity, and spiritual growth.",
+    gemstone: "Yellow Sapphire",
+  },
+  {
+    id: 6,
+    name: "Shukra (Venus)",
+    ruling_day: "Friday",
+    description: "Symbolizes love, beauty, and material wealth.",
+    mantras: ["Om Shum Shukraya Namah"],
+    significance: "Enhances love, creativity, and artistic abilities.",
+    gemstone: "Diamond",
+  },
+  {
+    id: 7,
+    name: "Shani (Saturn)",
+    ruling_day: "Saturday",
+    description: "Represents discipline, hard work, and justice.",
+    mantras: ["Om Sham Shanicharaya Namah"],
+    significance: "Provides patience, endurance, and karmic justice.",
+    gemstone: "Blue Sapphire",
+  },
+  {
+    id: 8,
+    name: "Rahu (North Lunar Node)",
+    ruling_day: "No specific day",
+    description: "Symbolizes illusions, desires, and transformations.",
+    mantras: ["Om Rah Rahave Namah"],
+    significance: "Helps in overcoming obstacles and removes negativity.",
+    gemstone: "Hessonite Garnet",
+  },
+  {
+    id: 9,
+    name: "Ketu (South Lunar Node)",
+    ruling_day: "No specific day",
+    description: "Represents spirituality, detachment, and past karma.",
+    mantras: ["Om Ket Ketave Namah"],
+    significance: "Encourages spiritual growth and self-realization.",
+    gemstone: "Cat's Eye",
+  },
+];
