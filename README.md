@@ -48,7 +48,7 @@ Divinora is an elegant digital sanctuary for exploring divine wisdom, with a spe
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/divinora.git
+git clone https://github.com/SUGAM-ARORA/divinora.git
 cd divinora
 ```
 
