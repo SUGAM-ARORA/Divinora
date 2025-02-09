@@ -1,4 +1,4 @@
-# Divinora - Divine Wisdom & Spiritual Knowledge
+# Divinora - Divine Wisdom & Spiritual Knowledge 🕉️
 
 ![Divinora](https://source.unsplash.com/1200x600/?temple,hindu)
 
@@ -6,34 +6,41 @@ Divinora is an elegant digital sanctuary for exploring divine wisdom, with a spe
 
 ## ✨ Features
 
-- 🕉️ **Extensive Hindu Collection**
-  - Detailed exploration of Hindu deities
-  - Sacred texts and scriptures
-  - Ancient wisdom and teachings
-  - Spiritual practices and rituals
+### 🕉️ Extensive Hindu Collection
+- Detailed profiles of major deities
+- Sacred texts and scriptures
+- Ancient wisdom and teachings
+- Spiritual practices and rituals
+- Festival calendar and celebrations
+- Navagraha (planetary) insights
 
-- 📚 **Comprehensive Content**
-  - 30+ detailed teachings on spiritual topics
-  - 30+ sacred stories from various traditions
-  - 30+ historical accounts and perspectives
-  - Curated bhakti videos and devotional content
+### 📚 Comprehensive Content
+- 30+ detailed spiritual teachings
+- 30+ sacred stories and legends
+- 30+ historical accounts
+- 10+ curated bhakti videos
+- Regular content updates
+- Expert-verified information
 
-- 🎨 **Beautiful Experience**
-  - Elegant, responsive design
-  - Dark/light mode for comfortable reading
-  - Interactive content exploration
-  - Seamless video integration
+### 🎨 Beautiful Experience
+- Elegant, responsive design
+- Dark/light mode with temple-inspired themes
+- Interactive content exploration
+- Seamless video integration
+- Immersive imagery
+- Intuitive navigation
 
-- 🔍 **Smart Features**
-  - Powerful search functionality
-  - Category-based navigation
-  - Related content suggestions
-  - Favorite content marking
+### 🔍 Smart Features
+- Powerful search functionality
+- Category-based navigation
+- Related content suggestions
+- Favorite content marking
+- Progress tracking
+- Personalized recommendations
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-
 - Node.js 18.x or later
 - npm 9.x or later
 
@@ -64,30 +71,54 @@ npm run dev
 - **UI Components**: shadcn/ui
 - **Icons**: Lucide React
 - **State Management**: React Hooks
-- **Theme**: Custom elegant theme with dark/light mode
+- **Database**: Supabase
+- **Authentication**: Supabase Auth
+- **Deployment**: Vercel/Netlify
 
 ## 📁 Project Structure
 
 ```
 divinora/
-├── app/                    # Next.js app directory
-├── components/            # React components
-├── content/              # Content data files
-├── lib/                  # Utilities and helpers
-├── public/              # Static assets
-└── styles/              # Additional styles
+├── app/                # Next.js app directory
+├── components/         # React components
+├── content/           # Content data files
+├── lib/              # Utilities and helpers
+├── public/           # Static assets
+└── styles/           # Additional styles
 ```
 
 ## 🤝 Contributing
 
 We welcome contributions! See our [Contributing Guidelines](CONTRIBUTING.md) and [Project Ideas](PROJECT_IDEAS.md) for ways to get involved.
 
+## 🔒 Security
+
+For security concerns, please see our [Security Policy](SECURITY.md).
+
 ## 📜 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
 
 ## 🙏 Acknowledgments
 
 - All the spiritual masters and teachers
 - Open-source community
 - Content contributors and maintainers
+- Early adopters and supporters
+
+## 🌟 Support
+
+- Star this repository
+- Share with others
+- Report issues
+- Submit pull requests
+- Join our community
+
+## 📫 Contact
+
+- Website: [divinora.com](https://divinora.com)
+- Email: contact@divinora.com
+- Twitter: [@DivinoraApp](https://twitter.com/DivinoraApp)
+- Discord: [Join our community](https://discord.gg/divinora)
+
+Let's explore divine wisdom together! 🙏✨

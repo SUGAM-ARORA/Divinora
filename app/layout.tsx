@@ -6,8 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Sacred Texts - World Religions Library',
-  description: 'Explore holy books, teachings, and history from all major world religions in one place.',
+  title: 'Divinora - Divine Wisdom & Spiritual Knowledge',
+  description: 'Explore divine wisdom, sacred texts, and spiritual teachings from Hindu traditions and world religions.',
 };
 
 export default function RootLayout({
@@ -23,6 +23,7 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
+          suppressHydrationWarning
         >
           {children}
         </ThemeProvider>
