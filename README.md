@@ -121,7 +121,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) f
  <a href="https://github.com/SUGAM-ARORA"><img src="https://img.icons8.com/fluency/2x/github.png" width="32px" height="32px"></img></a>
 
    </td>
-<td align="center"><https://github.com/Ojas-Arora"><img src="https://media.licdn.com/dms/image/v2/D5603AQF-0oeQKjHUGg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1731090529812?e=1740614400&v=beta&t=urY8EklFDUSFuxKUQtHCq6eK8inuueVUkFH1u9wypQM" width=150px height=150px /></a></br> <h4 style="color:cyan;">Ojas Arora</h4>
+<td align="center"><https://github.com/Ojas-Arora"><img src="https://media.licdn.com/dms/image/v2/D5603AQE_oGyp9N_-7w/profile-displayphoto-shrink_800_800/B56ZUP6MjiHEAg-/0/1739728669386?e=1745452800&v=beta&t=7qdHp6ZphCg0fA-qY6EklX5JNAy5ShAFqEXxSqfxuqw" width=150px height=150px /></a></br> <h4 style="color:cyan;">Ojas Arora</h4>
  <a href="https://www.linkedin.com/in/ojasarora14/"><img src="https://img.icons8.com/fluency/2x/linkedin.png" width="32px" height="32px"></img></a>
  <a href="https://github.com/Ojas-Arora"><img src="https://img.icons8.com/fluency/2x/github.png" width="32px" height="32px"></img></a>
    </td>
