@@ -8,6 +8,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card } from "@/components/ui/card";
 import { FestivalSection } from "@/components/festival-section";
 import { NavagrahaSection } from "@/components/navagraha-section";
+import { DeityModal } from "@/components/deity-modal";
+import { TeachingModal } from "@/components/teaching-modal";
+import { StoryModal } from "@/components/story-modal";
+import { HistoryModal } from "@/components/history-modal";
 import {
   BookText,
   Scroll,
@@ -52,6 +56,7 @@ export default function Home() {
   };
 
   const filterContent = (items: any[], term: string) => {
+    if (!items) return [];
     return items.filter(
       (item) =>
         item.name?.toLowerCase().includes(term.toLowerCase()) ||
@@ -63,6 +68,11 @@ export default function Home() {
   const handleItemClick = (item: any, type: "deity" | "teaching" | "story" | "history") => {
     setSelectedItem(item);
     setModalType(type);
+  };
+
+  const closeModal = () => {
+    setSelectedItem(null);
+    setModalType(null);
   };
 
   if (!mounted) {
@@ -128,7 +138,7 @@ export default function Home() {
               {filterContent(deities, searchTerm).map((deity) => (
                 <Card 
                   key={deity.id} 
-                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer card-expanded"
                   onClick={() => handleItemClick(deity, "deity")}
                 >
                   <div className="flex items-center space-x-4 mb-4">
@@ -160,7 +170,7 @@ export default function Home() {
               {filterContent(teachings, searchTerm).map((teaching) => (
                 <Card 
                   key={teaching.id} 
-                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer card-expanded"
                   onClick={() => handleItemClick(teaching, "teaching")}
                 >
                   <div className="flex items-center space-x-4 mb-4">
@@ -182,7 +192,7 @@ export default function Home() {
               {filterContent(sacredStories, searchTerm).map((story) => (
                 <Card 
                   key={story.id} 
-                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer card-expanded"
                   onClick={() => handleItemClick(story, "story")}
                 >
                   <div className="flex items-center space-x-4 mb-4">
@@ -209,7 +219,7 @@ export default function Home() {
               {filterContent(histories, searchTerm).map((history) => (
                 <Card 
                   key={history.id} 
-                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer"
+                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer card-expanded"
                   onClick={() => handleItemClick(history, "history")}
                 >
                   <div className="flex items-center space-x-4 mb-4">
@@ -273,7 +283,46 @@ export default function Home() {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Feature Sections */}
+        <section className="mt-16 space-y-16">
+          <FestivalSection />
+          <NavagrahaSection />
+        </section>
       </div>
+
+      {/* Modals */}
+      {modalType === "deity" && selectedItem && (
+        <DeityModal 
+          deity={selectedItem} 
+          isOpen={modalType === "deity"} 
+          onClose={closeModal} 
+        />
+      )}
+      
+      {modalType === "teaching" && selectedItem && (
+        <TeachingModal 
+          teaching={selectedItem} 
+          isOpen={modalType === "teaching"} 
+          onClose={closeModal} 
+        />
+      )}
+      
+      {modalType === "story" && selectedItem && (
+        <StoryModal 
+          story={selectedItem} 
+          isOpen={modalType === "story"} 
+          onClose={closeModal} 
+        />
+      )}
+      
+      {modalType === "history" && selectedItem && (
+        <HistoryModal 
+          history={selectedItem} 
+          isOpen={modalType === "history"} 
+          onClose={closeModal} 
+        />
+      )}
 
       <Button
         variant="outline"
