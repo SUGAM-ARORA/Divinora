@@ -56,7 +56,20 @@ export const deities = [
       "Om Namah Shivaya",
       "Mahamrityunjaya Mantra",
       "Shiva Panchakshara Stotram"
-    ]
+    ],
+    modelEmbedCode: `<div className="sketchfab-embed-wrapper w-full flex flex-col items-center">
+      <iframe
+        title="Lord Shiva in Standing posture"
+        frameBorder="0"
+        allowFullScreen
+        mozAllowFullScreen
+        webkitAllowFullScreen
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+        className="w-full max-w-3xl h-[600px]"
+        src="https://sketchfab.com/models/86f1bd1dcca841eca95ae062d54ee2b5/embed"
+      ></iframe>
+      
+    </div>`
   },
   {
     id: "vishnu",
@@ -79,7 +92,21 @@ export const deities = [
       "Om Namo Narayanaya",
       "Vishnu Sahasranamam",
       "Achyutam Keshavam"
-    ]
+    ],
+    modelEmbedCode: `<div className="sketchfab-embed-wrapper">
+  <iframe
+    title="Lord Vishnu standing"
+    frameBorder="0"
+    allowFullScreen
+    allow="autoplay; fullscreen; xr-spatial-tracking"
+    src="https://sketchfab.com/models/e0b90160bff84614a50121d621f2ee76/embed"
+    style={{ width: '100%', height: '480px' }}
+    {...{
+      mozallowfullscreen: 'true',
+      webkitallowfullscreen: 'true',
+    }}
+  ></iframe>
+</div>`
   },
   {
     id: "brahma",
@@ -101,7 +128,21 @@ export const deities = [
       "Om Brahma Namah",
       "Brahma Gayatri Mantra",
       "Chaturmukha Brahma Stotram"
-    ]
+    ],
+    modelEmbedCode: `<div className="sketchfab-embed-wrapper">
+  <iframe
+    title="Lord Brahma"
+    frameBorder="0"
+    allowFullScreen
+    allow="autoplay; fullscreen; xr-spatial-tracking"
+    src="https://sketchfab.com/models/92796ade849f4431a30d18c5f984fed3/embed"
+    style={{ width: '100%', height: '480px' }}
+    {...{
+      mozallowfullscreen: 'true',
+      webkitallowfullscreen: 'true',
+    }}
+  ></iframe>
+</div>`
   },
   {
     id: "ganesh",
@@ -123,7 +164,21 @@ export const deities = [
       "Om Gam Ganapataye Namaha",
       "Vakratunda Mahakaya",
       "Ganesha Ashtakam"
-    ]
+    ],
+    modelEmbedCode :`<div className="sketchfab-embed-wrapper">
+  <iframe
+    title="Lord Ganesha"
+    frameBorder="0"
+    allowFullScreen
+    allow="autoplay; fullscreen; xr-spatial-tracking"
+    src="https://sketchfab.com/models/1399da994ce54420878133a81f2f8f1e/embed"
+    style={{ width: '100%', height: '480px' }}
+    {...{
+      mozallowfullscreen: 'true',
+      webkitallowfullscreen: 'true',
+    }}
+  ></iframe>
+</div>`
   },
   {
     id: "krishna",
@@ -145,7 +200,21 @@ export const deities = [
       "Hare Krishna Mahamantra",
       "Om Namo Bhagavate Vasudevaya",
       "Govinda Damodara Stotram"
-    ]
+    ],
+    modelEmbedCode : `<div className="sketchfab-embed-wrapper">
+  <iframe
+    title="Lord Krishna"
+    frameBorder="0"
+    allowFullScreen
+    allow="autoplay; fullscreen; xr-spatial-tracking"
+    src="https://sketchfab.com/models/c76511bf7e4246718fdb4194e4f01154/embed"
+    style={{ width: '100%', height: '480px' }}
+    {...{
+      mozallowfullscreen: 'true',
+      webkitallowfullscreen: 'true',
+    }}
+  ></iframe>
+</div>`
   },
   {
     id: "hanuman",
@@ -167,7 +236,23 @@ export const deities = [
       "Hanuman Chalisa",
       "Om Hanumate Namaha",
       "Bajrang Baan"
-    ]
+    ],
+    modelEmbedCode: `<div className="sketchfab-embed-wrapper">
+      <iframe
+  title="Lord Hanuman"
+  frameBorder="0"
+  allowFullScreen
+  allow="autoplay; fullscreen; xr-spatial-tracking"
+  src="https://sketchfab.com/models/2bbe834a3cb54e5d956fe8d0ea7fdee8/embed"
+  style={{ width: '100%', height: '480px' }}
+  {...{
+    mozallowfullscreen: 'true',
+    webkitallowfullscreen: 'true',
+  }}
+></iframe>
+      
+    </div>`
+
   },
 ];
 
