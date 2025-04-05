@@ -13,7 +13,6 @@ import { TeachingModal } from "@/components/teaching-modal";
 import { StoryModal } from "@/components/story-modal";
 import { HistoryModal } from "@/components/history-modal";
 
-
 import "react-vertical-timeline-component/style.min.css"
 import {  X } from "lucide-react"
 import Link from "next/link"
@@ -47,8 +46,48 @@ export default function Home() {
   const [modalType, setModalType] = useState<"deity" | "teaching" | "story" | "history" | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [showTimeline, setShowTimeline] = useState(false)
+  const [showTimeline, setShowTimeline] = useState(false);
+  const [showGuides, setShowGuides] = useState(false);
   
+  const guides = [
+    {
+      id: 1,
+      title: "Bhagavad Gita",
+      description: "The sacred Hindu scripture that contains the spiritual teachings of Lord Krishna to Arjuna.",
+      icon: <BookOpen className="h-5 w-5" />,
+      pdfUrl: "https://ebooks.tirumala.org/downloads/The%20Bhagavad%20Gita.pdf"
+    },
+    {
+      id: 2,
+      title: "Ramayana",
+      description: "The epic story of Lord Rama's life, his exile, and his battle with Ravana.",
+      icon: <BookOpen className="h-5 w-5" />,
+      pdfUrl:"https://www.gutenberg.org/files/24869/24869-pdf.pdf"
+    },
+    {
+      id: 3,
+      title: "Mahabharata",
+      description: "The great Indian epic that includes the Bhagavad Gita and tells the story of the Kurukshetra War.",
+      icon: <BookOpen className="h-5 w-5" />,
+      pdfUrl:"https://www.hariomgroup.org/hariombooks_shastra/mahabharata.pdf"
+    },
+    {
+      id: 4,
+      title: "Upanishads",
+      description: "Ancient philosophical texts that form the theoretical basis for Hinduism.",
+      icon: <BookOpen className="h-5 w-5" />,
+      pdfUrl:"https://estudantedavedanta.net/The-Upanishads-Translated-by-Swami-Paramananda.pdf"
+
+    },
+    {
+      id: 5,
+      title: "Puranas",
+      description: "Ancient texts eulogizing various deities through divine stories.",
+      icon: <BookOpen className="h-5 w-5" />,
+      pdfUrl:"https://www.symb-ol.org/app/download/11197377/18+Puranas.pdf"
+    }
+  ];
+
   const histories = [
     {
       year: "3300 BCE - 1700 BCE",
@@ -187,8 +226,8 @@ export default function Home() {
     <main className="min-h-screen bg-background">
       <nav className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
         <div className="nav-container">
-        {/* Center History Button */}
-        <div className="absolute left-1/2 transform -translate-x-1/2">
+          {/* Center History Button */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 flex w-25 gap-5">
             <Button
               onClick={() => setShowTimeline(true)}
               variant="outline"
@@ -198,10 +237,16 @@ export default function Home() {
               <History className="h-4 w-4" />
               <span>Explore History</span>
             </Button>
+            <Button
+              onClick={() => setShowGuides(true)}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 mt-3"
+            >
+              <BookOpen className="h-4 w-4" />
+              <span>Show Guides</span>
+            </Button>
           </div>
-
-
-      
 
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
@@ -287,7 +332,50 @@ export default function Home() {
           </div>
         </div>
       )}
-      
+
+      {/* Guides Modal */}
+      {showGuides && (
+        <div
+          className="mt-9 fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center"
+          onClick={() => setShowGuides(false)}
+        >
+          <div
+            className="bg-background border rounded-lg shadow-lg w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto relative animate-in fade-in-0 zoom-in-95"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-6 border-b">
+              <h2 className="text-2xl font-semibold">Hindu Sacred Guides</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowGuides(false)}
+                className="rounded-full"
+                aria-label="Close"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6">
+              <div className="space-y-4">
+                {guides.map((guide) => (
+                  <Card key={guide.id} className="p-4 hover:shadow-md transition-shadow" onClick={() => window.open(guide.pdfUrl, '_blank')}>
+                    <div  className="flex items-start space-x-4">
+                      <div className="flex-shrink-0 p-2 bg-primary/10 rounded-full">
+                        {guide.icon}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold">{guide.title}</h3>
+                        <p className="text-muted-foreground">{guide.description}</p>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="nav-container py-12">
         <header className="text-center mb-12">
