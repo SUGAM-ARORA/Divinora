@@ -19,15 +19,9 @@ export function DeityModal({ deity, isOpen, onClose }: DeityModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
         <DialogTitle className="text-2xl font-bold">{deity.name}</DialogTitle>
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onClose}
-          className="absolute right-4 top-4"
-        >
-          <X className="h-4 w-4" />
-        </Button>
-
+       
+        
+        
         <ScrollArea className="h-[calc(90vh-100px)]">
           <div className="space-y-6 p-4">
             {/* Main 3D Model Viewer */}
