@@ -1,5 +1,5 @@
 "use client";
-
+import { ChevronRight, ChevronLeft, Loader2 } from "lucide-react"
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,9 +12,10 @@ import { DeityModal } from "@/components/deity-modal";
 import { TeachingModal } from "@/components/teaching-modal";
 import { StoryModal } from "@/components/story-modal";
 import { HistoryModal } from "@/components/history-modal";
-
+import { marked } from 'marked';
+import { RotateCw } from 'lucide-react';
 import "react-vertical-timeline-component/style.min.css"
-import {  X } from "lucide-react"
+import { X } from "lucide-react"
 import Link from "next/link"
 // @ts-ignore
 import { VerticalTimeline, VerticalTimelineElement } from "react-vertical-timeline-component";
@@ -38,7 +39,19 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { holyBooks, deities, sacredStories, teachings, histories, bhaktiVideos } from "@/lib/content";
+type Question = {
+  id: number;
+  question: string;
+  options: string[];
+};
 
+type PathSelectionState = {
+  isOpen: boolean;
+  currentQuestionIndex: number;
+  answers: string[];
+  isLoading: boolean;
+  result: string | null;
+};
 export default function Home() {
   const { theme, setTheme } = useTheme();
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,7 +61,9 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
   const [showGuides, setShowGuides] = useState(false);
-  
+
+
+
   const guides = [
     {
       id: 1,
@@ -62,21 +77,21 @@ export default function Home() {
       title: "Ramayana",
       description: "The epic story of Lord Rama's life, his exile, and his battle with Ravana.",
       icon: <BookOpen className="h-5 w-5" />,
-      pdfUrl:"https://www.gutenberg.org/files/24869/24869-pdf.pdf"
+      pdfUrl: "https://www.gutenberg.org/files/24869/24869-pdf.pdf"
     },
     {
       id: 3,
       title: "Mahabharata",
       description: "The great Indian epic that includes the Bhagavad Gita and tells the story of the Kurukshetra War.",
       icon: <BookOpen className="h-5 w-5" />,
-      pdfUrl:"https://www.hariomgroup.org/hariombooks_shastra/mahabharata.pdf"
+      pdfUrl: "https://www.hariomgroup.org/hariombooks_shastra/mahabharata.pdf"
     },
     {
       id: 4,
       title: "Upanishads",
       description: "Ancient philosophical texts that form the theoretical basis for Hinduism.",
       icon: <BookOpen className="h-5 w-5" />,
-      pdfUrl:"https://estudantedavedanta.net/The-Upanishads-Translated-by-Swami-Paramananda.pdf"
+      pdfUrl: "https://estudantedavedanta.net/The-Upanishads-Translated-by-Swami-Paramananda.pdf"
 
     },
     {
@@ -84,7 +99,7 @@ export default function Home() {
       title: "Puranas",
       description: "Ancient texts eulogizing various deities through divine stories.",
       icon: <BookOpen className="h-5 w-5" />,
-      pdfUrl:"https://www.symb-ol.org/app/download/11197377/18+Puranas.pdf"
+      pdfUrl: "https://www.symb-ol.org/app/download/11197377/18+Puranas.pdf"
     }
   ];
 
@@ -180,7 +195,75 @@ export default function Home() {
       description: "India gains independence from British rule, leading to the partition of India and Pakistan. Hindu culture played a major role in shaping India's identity.",
     },
   ];
-  
+
+  const [pathSelection, setPathSelection] = useState<PathSelectionState>({
+    isOpen: false,
+    currentQuestionIndex: 0,
+    answers: [],
+    isLoading: false,
+    result: null
+  });
+
+  // Questions for the path selection
+  const pathQuestions: Question[] = [
+    {
+      id: 1,
+      question: "What is your primary spiritual goal?",
+      options: [
+        "Moksha (Liberation)",
+        "Dharma (Righteous living)",
+        "Bhakti (Devotion to God)",
+        "Jnana (Spiritual knowledge)",
+        "Karma (Selfless service)"
+      ]
+    },
+    {
+      id: 2,
+      question: "Which deity do you feel most drawn to?",
+      options: [
+        "Vishnu/Krishna/Rama",
+        "Shiva",
+        "Devi (Durga, Kali, Lakshmi, Saraswati)",
+        "Ganesha",
+        "Hanuman",
+        "No particular deity"
+      ]
+    },
+    {
+      id: 3,
+      question: "How do you prefer to practice spirituality?",
+      options: [
+        "Meditation and yoga",
+        "Prayer and rituals",
+        "Studying scriptures",
+        "Singing bhajans/kirtans",
+        "Selfless service"
+      ]
+    },
+    {
+      id: 4,
+      question: "What time of day do you feel most spiritual?",
+      options: [
+        "Early morning (Brahma Muhurta)",
+        "Sunrise/Sunset",
+        "Noon",
+        "Night",
+        "No particular time"
+      ]
+    },
+    {
+      id: 5,
+      question: "Which of these values resonates most with you?",
+      options: [
+        "Truth (Satya)",
+        "Compassion (Daya)",
+        "Wisdom (Jnana)",
+        "Discipline (Tapas)",
+        "Love (Prema)"
+      ]
+    }
+  ];
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -218,12 +301,119 @@ export default function Home() {
     setModalType(null);
   };
 
+  // Path selection handlers
+  const openPathSelection = () => {
+    setPathSelection({
+      isOpen: true,
+      currentQuestionIndex: 0,
+      answers: [],
+      isLoading: false,
+      result: null
+    });
+  };
+
+  const closePathSelection = () => {
+    setPathSelection({
+      isOpen: false,
+      currentQuestionIndex: 0,
+      answers: [],
+      isLoading: false,
+      result: null
+    });
+  };
+
+  const handleAnswerSelect = (answer: string) => {
+    const newAnswers = [...pathSelection.answers, answer];
+    setPathSelection(prev => ({
+      ...prev,
+      answers: newAnswers
+    }));
+
+    if (pathSelection.currentQuestionIndex < pathQuestions.length - 1) {
+      // Move to next question
+      setPathSelection(prev => ({
+        ...prev,
+        currentQuestionIndex: prev.currentQuestionIndex + 1
+      }));
+    } else {
+      // All questions answered - get recommendation
+      getSpiritualRecommendation(newAnswers);
+    }
+  };
+
+  const goToPreviousQuestion = () => {
+    if (pathSelection.currentQuestionIndex > 0) {
+      const newAnswers = [...pathSelection.answers];
+      newAnswers.pop(); // Remove last answer
+
+      setPathSelection(prev => ({
+        ...prev,
+        currentQuestionIndex: prev.currentQuestionIndex - 1,
+        answers: newAnswers
+      }));
+    }
+  };
+
+
+  const mockRecommendations = [
+    `**Bhakti Yoga Path**\nPractice daily kirtan and read the Bhagavad Gita Chapter 12.`,
+    `**Jnana Yoga Path**\nStudy the Upanishads and practice "Who am I?" meditation.`,
+    `**Karma Yoga Path**\nEngage in selfless service while offering actions to the Divine.`
+  ];
+  const getSpiritualRecommendation = async (answers: string[]) => {
+    setPathSelection(prev => ({ ...prev, isLoading: true, error: null }));
+
+    try {
+      const response = await fetch('/api/path-recommendation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error('Failed to get recommendation');
+      }
+
+      setPathSelection(prev => ({
+        ...prev,
+        result: data.recommendation,
+        isLoading: false
+      }));
+    } catch (error) {
+      setPathSelection(prev => ({
+        ...prev,
+        error: "Connection issue - showing sample recommendation",
+        result: mockRecommendations[
+          Math.floor(Math.random() * mockRecommendations.length)
+        ],
+        isLoading: false
+      }));
+    }
+  };
+
+
+
+  const restartPathSelection = () => {
+    setPathSelection({
+      isOpen: true,
+      currentQuestionIndex: 0,
+      answers: [],
+      isLoading: false,
+      result: null
+    });
+  };
+
   if (!mounted) {
     return null;
   }
 
+
   return (
+
     <main className="min-h-screen bg-background">
+
       <nav className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
         <div className="nav-container">
           {/* Center History Button */}
@@ -245,6 +435,15 @@ export default function Home() {
             >
               <BookOpen className="h-4 w-4" />
               <span>Show Guides</span>
+            </Button>
+            <Button
+              onClick={openPathSelection}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 mt-3"
+            >
+              <BookOpen className="h-4 w-4" />
+              <span>Choose your path</span>
             </Button>
           </div>
 
@@ -275,6 +474,97 @@ export default function Home() {
           </div>
         </div>
       </nav>
+
+      {/* Path Selection Modal */}
+      {pathSelection.isOpen && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-background border rounded-lg shadow-lg w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto relative animate-in fade-in-0 zoom-in-95">
+            <div className="flex items-center justify-between p-6 border-b">
+              <h2 className="text-2xl font-semibold">
+                {pathSelection.result
+                  ? "Your Spiritual Path"
+                  : `Discover Your Path (${pathSelection.currentQuestionIndex + 1}/${pathQuestions.length})`
+                }
+              </h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={closePathSelection}
+                className="rounded-full"
+                aria-label="Close"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6">
+              {pathSelection.isLoading ? (
+                <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                  <Loader2 className="h-8 w-35 animate-spin text-primary" />
+                  <p>Analyzing your responses...</p>
+                  <p className="text-sm text-muted-foreground">This may take a moment</p>
+                </div>
+              ) : pathSelection.result ? (
+                <div className="space-y-6">
+                  <div className="prose dark:prose-invert max-w-none">
+                    <h3 className="text-xl font-semibold mb-4">Your Personalized Path</h3>
+                    <div
+                      className="bg-secondary/30 p-4 rounded-lg mb-6 prose-p:my-2"
+                      dangerouslySetInnerHTML={{ __html: marked(pathSelection.result) }}
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <Button
+                      onClick={restartPathSelection}
+                      variant="outline"
+                      className="flex-1"
+                    >
+                      <RotateCw className="h-4 w-4 mr-2" />
+                      Start Over
+                    </Button>
+                    <Button
+                      onClick={closePathSelection}
+                      className="flex-1"
+                    >
+                      Close
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <h3 className="text-lg font-medium">
+                    {pathQuestions[pathSelection.currentQuestionIndex].question}
+                  </h3>
+
+                  <div className="space-y-3">
+                    {pathQuestions[pathSelection.currentQuestionIndex].options.map((option, index) => (
+                      <Button
+                        key={index}
+                        variant="outline"
+                        className="w-full justify-start text-left h-auto py-3 whitespace-normal"
+                        onClick={() => handleAnswerSelect(option)}
+                      >
+                        {option}
+                      </Button>
+                    ))}
+                  </div>
+
+                  {pathSelection.currentQuestionIndex > 0 && (
+                    <Button
+                      variant="ghost"
+                      onClick={goToPreviousQuestion}
+                      className="mt-4"
+                    >
+                      <ChevronLeft className="h-4 w-4 mr-2" />
+                      Back
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Timeline Modal */}
       {showTimeline && (
@@ -360,7 +650,7 @@ export default function Home() {
               <div className="space-y-4">
                 {guides.map((guide) => (
                   <Card key={guide.id} className="p-4 hover:shadow-md transition-shadow" onClick={() => window.open(guide.pdfUrl, '_blank')}>
-                    <div  className="flex items-start space-x-4">
+                    <div className="flex items-start space-x-4">
                       <div className="flex-shrink-0 p-2 bg-primary/10 rounded-full">
                         {guide.icon}
                       </div>
@@ -402,8 +692,8 @@ export default function Home() {
           <TabsContent value="deities" className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filterContent(deities, searchTerm).map((deity) => (
-                <Card 
-                  key={deity.id} 
+                <Card
+                  key={deity.id}
                   className="p-6 hover:shadow-lg transition-shadow cursor-pointer card-expanded"
                   onClick={() => handleItemClick(deity, "deity")}
                 >
@@ -434,8 +724,8 @@ export default function Home() {
           <TabsContent value="teachings" className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filterContent(teachings, searchTerm).map((teaching) => (
-                <Card 
-                  key={teaching.id} 
+                <Card
+                  key={teaching.id}
                   className="p-6 hover:shadow-lg transition-shadow cursor-pointer card-expanded"
                   onClick={() => handleItemClick(teaching, "teaching")}
                 >
@@ -456,8 +746,8 @@ export default function Home() {
           <TabsContent value="stories" className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filterContent(sacredStories, searchTerm).map((story) => (
-                <Card 
-                  key={story.id} 
+                <Card
+                  key={story.id}
                   className="p-6 hover:shadow-lg transition-shadow cursor-pointer card-expanded"
                   onClick={() => handleItemClick(story, "story")}
                 >
@@ -483,8 +773,8 @@ export default function Home() {
           <TabsContent value="history" className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filterContent(histories, searchTerm).map((history) => (
-                <Card 
-                  key={history.id} 
+                <Card
+                  key={history.id}
                   className="p-6 hover:shadow-lg transition-shadow cursor-pointer card-expanded"
                   onClick={() => handleItemClick(history, "history")}
                 >
@@ -559,34 +849,34 @@ export default function Home() {
 
       {/* Modals */}
       {modalType === "deity" && selectedItem && (
-        <DeityModal 
-          deity={selectedItem} 
-          isOpen={modalType === "deity"} 
-          onClose={closeModal} 
+        <DeityModal
+          deity={selectedItem}
+          isOpen={modalType === "deity"}
+          onClose={closeModal}
         />
       )}
-      
+
       {modalType === "teaching" && selectedItem && (
-        <TeachingModal 
-          teaching={selectedItem} 
-          isOpen={modalType === "teaching"} 
-          onClose={closeModal} 
+        <TeachingModal
+          teaching={selectedItem}
+          isOpen={modalType === "teaching"}
+          onClose={closeModal}
         />
       )}
-      
+
       {modalType === "story" && selectedItem && (
-        <StoryModal 
-          story={selectedItem} 
-          isOpen={modalType === "story"} 
-          onClose={closeModal} 
+        <StoryModal
+          story={selectedItem}
+          isOpen={modalType === "story"}
+          onClose={closeModal}
         />
       )}
-      
+
       {modalType === "history" && selectedItem && (
-        <HistoryModal 
-          history={selectedItem} 
-          isOpen={modalType === "history"} 
-          onClose={closeModal} 
+        <HistoryModal
+          history={selectedItem}
+          isOpen={modalType === "history"}
+          onClose={closeModal}
         />
       )}
 
