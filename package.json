@@ -45,7 +45,7 @@
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
     "chalk": "^5.4.1",
-    "class-variance-authority": "^0.7.0",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
