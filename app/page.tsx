@@ -83,6 +83,8 @@ export default function Home() {
 
 
 
+
+
   const guides = [
     {
       id: 1,
@@ -535,23 +537,23 @@ export default function Home() {
   };
   const pronounceWord = (text: string) => {
     const utterance = new SpeechSynthesisUtterance(text);
-    
+
     const voices = window.speechSynthesis.getVoices();
     const sanskritVoice = voices.find(voice =>
-      voice.lang.toLowerCase().includes('sa') || 
+      voice.lang.toLowerCase().includes('sa') ||
       voice.lang.toLowerCase().includes('hi') // fallback to Hindi if Sanskrit is unavailable
     );
-  
+
     if (sanskritVoice) {
       utterance.voice = sanskritVoice;
     }
-  
+
     utterance.rate = 0.9;
     utterance.pitch = 1;
-  
+
     window.speechSynthesis.speak(utterance);
   };
-  
+
 
 
   return (
@@ -559,58 +561,59 @@ export default function Home() {
     <main className="min-h-screen bg-background">
 
       <nav className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
-        <div className="nav-container">
-          {/* Center History Button */}
-          <div className="absolute left-1/2 right-1 transform -translate-x-1/2 flex w-25 gap-3">
+        <div className="px-4 sm:px-6 lg:px-8">
+          {/* Center Buttons for Larger Screens, Stack on Mobile */}
+          <div className="flex flex-wrap justify-center sm:absolute sm:left-1/2 sm:-translate-x-1/2 gap-3 py-3">
             <Button
               onClick={() => setShowTimeline(true)}
               variant="outline"
               size="sm"
-              className="flex items-center gap-2 mt-3"
+              className="flex items-center gap-2"
             >
               <History className="h-4 w-4" />
-              <span>Explore History</span>
+              <span className="text-sm">Explore History</span>
             </Button>
             <Button
               onClick={() => setShowGuides(true)}
               variant="outline"
               size="sm"
-              className="flex items-center gap-2 mt-3"
+              className="flex items-center gap-2"
             >
               <BookOpen className="h-4 w-4" />
-              <span>Show Guides</span>
+              <span className="text-sm">Show Guides</span>
             </Button>
             <Button
               onClick={openPathSelection}
               variant="outline"
               size="sm"
-              className="flex items-center gap-2 mt-3"
+              className="flex items-center gap-2"
             >
               <BookOpen className="h-4 w-4" />
-              <span>Choose your path</span>
+              <span className="text-sm">Choose your path</span>
             </Button>
             <Button
               onClick={() => setDictionary(prev => ({ ...prev, isOpen: true }))}
               variant="outline"
               size="sm"
-              className="flex items-center gap-2 mt-3"
+              className="flex items-center gap-2"
             >
               <BookOpen className="h-4 w-4" />
-              <span>Dictionary</span>
+              <span className="text-sm">Dictionary</span>
             </Button>
           </div>
 
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
+          {/* Logo and Search */}
+          <div className="flex flex-col sm:flex-row justify-between items-center h-auto sm:h-16 gap-3 sm:gap-0">
+            <div className="flex items-center mt-2 sm:mt-0">
               <BookText className="h-8 w-8 text-primary" />
               <span className="ml-2 text-xl font-semibold">Divinora</span>
             </div>
-            <div className="flex items-center space-x-4">
-              <div className="relative w-64">
+            <div className="flex items-center space-x-3 w-full sm:w-auto">
+              <div className="relative flex-1 sm:flex-none w-full sm:w-64">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search divine wisdom..."
-                  className="pl-8"
+                  className="pl-8 w-full"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -627,6 +630,7 @@ export default function Home() {
           </div>
         </div>
       </nav>
+
 
       {/* Path Selection Modal */}
       {pathSelection.isOpen && (
