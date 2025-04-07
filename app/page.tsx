@@ -45,6 +45,17 @@ type Question = {
   options: string[];
 };
 
+type DictionaryState = {
+  isOpen: boolean;
+  englishWord: string;
+  sanskritWord: string;
+  isLoading: boolean;
+  error: string | null;
+};
+
+
+
+
 type PathSelectionState = {
   isOpen: boolean;
   currentQuestionIndex: number;
@@ -61,6 +72,14 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
   const [showGuides, setShowGuides] = useState(false);
+
+  const [dictionary, setDictionary] = useState<DictionaryState>({
+    isOpen: false,
+    englishWord: "",
+    sanskritWord: "",
+    isLoading: false,
+    error: null
+  });
 
 
 
@@ -410,6 +429,131 @@ export default function Home() {
   }
 
 
+  const handleTranslate = async () => {
+    if (!dictionary.englishWord.trim()) return;
+
+    setDictionary(prev => ({
+      ...prev,
+      isLoading: true,
+      error: null,
+      sanskritWord: ""
+    }));
+
+    try {
+      const translation = await translateToSanskrit(dictionary.englishWord);
+
+      setDictionary(prev => ({
+        ...prev,
+        sanskritWord: translation,
+        isLoading: false
+      }));
+    } catch (error) {
+      setDictionary(prev => ({
+        ...prev,
+        error: "Failed to translate. Please try again.",
+        isLoading: false
+      }));
+    }
+  };
+
+  const translateToSanskrit = async (word: string): Promise<string> => {
+
+    const commonTranslations: Record<string, string> = {
+      "peace": "शान्तिः",
+      "love": "प्रेम",
+      "wisdom": "ज्ञानम्",
+      "light": "ज्योतिः",
+      "truth": "सत्यम्",
+      "hello": "नमस्ते",
+      "thank you": "धन्यवादः"
+    };
+
+
+    const lowerWord = word.toLowerCase();
+    if (commonTranslations[lowerWord]) {
+      return commonTranslations[lowerWord];
+    }
+
+
+    const apiEndpoints = [
+      {
+        url: 'https://translation-api.example.com/v1/translate',
+        options: {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            text: word,
+            source: 'en',
+            target: 'sa'
+          })
+        }
+      },
+      {
+        url: 'https://libretranslate.de/translate',
+        options: {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            q: word,
+            source: 'en',
+            target: 'sa',
+            format: 'text'
+          })
+        }
+      },
+      {
+        url: `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|sa`,
+        options: { method: 'GET' }
+      }
+    ];
+
+
+    for (const endpoint of apiEndpoints) {
+      try {
+        const response = await fetch(endpoint.url, endpoint.options);
+
+        if (!response.ok) continue;
+
+        const data = await response.json();
+
+
+        if (endpoint.url.includes('libretranslate')) {
+          return data.translatedText;
+        } else if (endpoint.url.includes('mymemory')) {
+          return data.responseData?.translatedText || "Translation not found";
+        } else {
+
+          return data.translation || data.result || "Translation not found";
+        }
+      } catch (error) {
+        console.warn(`API ${endpoint.url} failed:`, error);
+        continue;
+      }
+    }
+
+    throw new Error('All translation services failed');
+  };
+  const pronounceWord = (text: string) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    const voices = window.speechSynthesis.getVoices();
+    const sanskritVoice = voices.find(voice =>
+      voice.lang.toLowerCase().includes('sa') || 
+      voice.lang.toLowerCase().includes('hi') // fallback to Hindi if Sanskrit is unavailable
+    );
+  
+    if (sanskritVoice) {
+      utterance.voice = sanskritVoice;
+    }
+  
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+  
+    window.speechSynthesis.speak(utterance);
+  };
+  
+
+
   return (
 
     <main className="min-h-screen bg-background">
@@ -417,7 +561,7 @@ export default function Home() {
       <nav className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
         <div className="nav-container">
           {/* Center History Button */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 flex w-25 gap-5">
+          <div className="absolute left-1/2 right-1 transform -translate-x-1/2 flex w-25 gap-3">
             <Button
               onClick={() => setShowTimeline(true)}
               variant="outline"
@@ -444,6 +588,15 @@ export default function Home() {
             >
               <BookOpen className="h-4 w-4" />
               <span>Choose your path</span>
+            </Button>
+            <Button
+              onClick={() => setDictionary(prev => ({ ...prev, isOpen: true }))}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 mt-3"
+            >
+              <BookOpen className="h-4 w-4" />
+              <span>Dictionary</span>
             </Button>
           </div>
 
@@ -889,6 +1042,82 @@ export default function Home() {
       >
         <ChevronUp className="h-5 w-5" />
       </Button>
+      {/* Dictionary Modal */}
+      {dictionary.isOpen && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-background border rounded-lg shadow-lg w-full max-w-md mx-4 animate-in fade-in-0 zoom-in-95">
+            <div className="flex items-center justify-between p-6 border-b">
+              <h2 className="text-2xl font-semibold">English to Sanskrit Dictionary</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setDictionary(prev => ({ ...prev, isOpen: false }))}
+                className="rounded-full"
+                aria-label="Close"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="english-word" className="block text-sm font-medium">
+                  English Word
+                </label>
+                <div className="flex gap-2">
+                  <Input
+                    id="english-word"
+                    placeholder="Enter English word..."
+                    value={dictionary.englishWord}
+                    onChange={(e) => setDictionary(prev => ({
+                      ...prev,
+                      englishWord: e.target.value
+                    }))}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleTranslate();
+                      }
+                    }}
+                  />
+                  <Button
+                    onClick={handleTranslate}
+                    disabled={!dictionary.englishWord.trim() || dictionary.isLoading}
+                  >
+                    {dictionary.isLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      "Translate"
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              {dictionary.sanskritWord && (
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium">Sanskrit Translation</label>
+                  <div className="p-4 border rounded-md bg-secondary/30 flex justify-between items-center">
+                    <p className="text-lg font-medium">{dictionary.sanskritWord}</p>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => pronounceWord(dictionary.sanskritWord)}
+                      className="ml-2"
+                      aria-label="Pronounce Sanskrit Word"
+                    >
+                      🔊
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+
+              {dictionary.error && (
+                <div className="text-red-500 text-sm">{dictionary.error}</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
