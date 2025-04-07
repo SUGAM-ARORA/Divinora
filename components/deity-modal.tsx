@@ -19,26 +19,23 @@ export function DeityModal({ deity, isOpen, onClose }: DeityModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
         <DialogTitle className="text-2xl font-bold">{deity.name}</DialogTitle>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          onClick={onClose}
-          className="absolute right-4 top-4"
-        >
-          <X className="h-4 w-4" />
-        </Button>
+       
+        
         
         <ScrollArea className="h-[calc(90vh-100px)]">
           <div className="space-y-6 p-4">
-            {/* Main Image */}
-            <div className="relative h-64 w-full rounded-lg overflow-hidden">
-              <Image
-                src={deity.mainImage || `https://source.unsplash.com/800x400/?${deity.name.toLowerCase()},temple`}
-                alt={deity.name}
-                fill
-                className="object-cover"
-              />
-            </div>
+            {/* Main 3D Model Viewer */}
+            {deity.modelEmbedCode && (
+              <div>
+                <h3 className="text-xl font-semibold mb-2">3D Model</h3>
+                <div
+                  className="rounded-lg overflow-hidden"
+                  dangerouslySetInnerHTML={{ __html: deity.modelEmbedCode }}
+                  style={{ width: "600px", height: "200px" }} 
+                />
+              </div>
+            )}
+
 
             {/* Description */}
             <div>
