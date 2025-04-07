@@ -573,6 +573,9 @@ export default function Home() {
               <History className="h-4 w-4" />
               <span className="text-sm">Explore History</span>
             </Button>
+           
+            
+
             <Button
               onClick={() => setShowGuides(true)}
               variant="outline"
