@@ -1,12 +1,15 @@
 "use client";
-import { ChevronRight, ChevronLeft, Loader2, Globe, Heart, Users, BookOpen, Star, Calendar, Sparkles, Search, Sun, Moon, ChevronUp, Youtube, History, RotateCw, X } from "lucide-react"
-import { useState, useEffect } from "react";
+import { ChevronRight, ChevronLeft, Loader2, Globe, Heart, Users, BookOpen, Star, Calendar, Sparkles, Search, Sun, Moon, ChevronUp, Youtube, History, RotateCw, X, Play, Pause, Volume2, VolumeX, Compass, Map, Camera, Share2, Download, Bookmark, Eye, EyeOff, Zap, Wind, Waves, Mountain, TreePine, Flower2, Lightbulb, Brain, Target, Award, Gift, Music, Headphones, Mic, Radio, Palette, Brush, Image, Video, FileText, MessageCircle, Phone, Mail, MapPin, Clock, TrendingUp, Filter, SortAsc, Grid, List, Maximize2, Minimize2, RefreshCw, Settings, HelpCircle, Info, AlertCircle, CheckCircle, XCircle, Plus, Minus, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, MoreHorizontal, MoreVertical, ExternalLink, Copy, Edit, Trash2, Save, Upload, FolderOpen, Archive, Tag, Flag, Shield, Lock, Unlock, Key, User, UserPlus, UserMinus, UserCheck, UserX, Users2, Crown, Gem, Coins, DollarSign, CreditCard, Wallet, ShoppingCart, ShoppingBag, Package, Truck, Home, Building, School, Church, Mosque, Synagogue, Temple, Castle, Landmark, Bridge, Plane, Car, Bus, Train, Ship, Bike, Walk, Run, Gamepad2, Dice1, Dice2, Dice3, Dice4, Dice5, Dice6, Puzzle, Trophy, Medal, Ribbon, Flame, Snowflake, Droplets, Cloud, CloudRain, CloudSnow, CloudLightning, Rainbow, Sunrise, Sunset, MoonIcon, Stars, Comet, Rocket, Satellite, Globe2, Earth, Compass as CompassIcon, Navigation, Route, MapPinned, Locate, LocateFixed, LocateOff, Radar, Scan, QrCode, Barcode, Hash, AtSign, Percent, Equal, NotEqual, Calculator, Ruler, Scissors, Paperclip, Link, Unlink, Chain, Anchor, Magnet, Zap as ZapIcon, Battery, BatteryLow, Plug, Power, PowerOff, Wifi, WifiOff, Bluetooth, BluetoothConnected, BluetoothSearching, BluetoothOff, Signal, SignalHigh, SignalLow, SignalMedium, SignalZero, Antenna, Radio as RadioIcon, Tv, Monitor, Smartphone, Tablet, Laptop, Desktop, Watch, Gamepad, Joystick, Mouse, Keyboard, Printer, Scanner, Fax, Webcam, Microphone, Speaker, Headphones as HeadphonesIcon, VolumeOff, Volume1, Volume as VolumeIcon, Shuffle, Repeat, Repeat1, SkipBack, SkipForward, FastForward, Rewind, PlayCircle, PauseCircle, StopCircle, Square, Circle, Triangle, Hexagon, Octagon, Pentagon, Diamond, Spade, Club, Heart as HeartIcon, Star as StarIcon, Bookmark as BookmarkIcon, Flag as FlagIcon, Pin, PinOff, Thumbsup, ThumbsDown, HandMetal, Peace, Handshake, Clap, Wave, Salute, Pray, Namaste } from "lucide-react"
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
 import { FestivalSection } from "@/components/festival-section";
 import { NavagrahaSection } from "@/components/navagraha-section";
 import { DeityModal } from "@/components/deity-modal";
@@ -42,6 +45,41 @@ type PathSelectionState = {
   result: string | null;
 };
 
+type ViewMode = "grid" | "list" | "card";
+type SortMode = "name" | "religion" | "popularity" | "recent";
+
+// New unique features
+type MeditationState = {
+  isActive: boolean;
+  duration: number;
+  currentTime: number;
+  breathingPhase: 'inhale' | 'hold' | 'exhale';
+  soundEnabled: boolean;
+};
+
+type VirtualPilgrimageState = {
+  isActive: boolean;
+  currentLocation: string;
+  visitedPlaces: string[];
+  currentStep: number;
+  totalSteps: number;
+};
+
+type SpiritualJourneyState = {
+  level: number;
+  experience: number;
+  badges: string[];
+  dailyStreak: number;
+  completedActivities: string[];
+};
+
+type WeatherSpiritualState = {
+  weather: string;
+  spiritualMessage: string;
+  suggestedPractice: string;
+  mood: string;
+};
+
 export default function Home() {
   const { theme, setTheme } = useTheme();
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,6 +90,71 @@ export default function Home() {
   const [showTimeline, setShowTimeline] = useState(false);
   const [showGuides, setShowGuides] = useState(false);
   const [selectedReligion, setSelectedReligion] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [sortMode, setSortMode] = useState<SortMode>("name");
+  const [showFilters, setShowFilters] = useState(false);
+  const [favorites, setFavorites] = useState<string[]>([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showMiniPlayer, setShowMiniPlayer] = useState(false);
+  const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState<any>(null);
+  const [volume, setVolume] = useState([50]);
+  const [showVirtualTour, setShowVirtualTour] = useState(false);
+  const [showDailyWisdom, setShowDailyWisdom] = useState(true);
+  const [showWeatherSpiritual, setShowWeatherSpiritual] = useState(false);
+  const [showSpiritualCompass, setShowSpiritualCompass] = useState(false);
+  const [showMoodTracker, setShowMoodTracker] = useState(false);
+  const [showPrayerReminder, setShowPrayerReminder] = useState(false);
+  const [showSacredGeometry, setShowSacredGeometry] = useState(false);
+  const [showAuraVisualization, setShowAuraVisualization] = useState(false);
+  const [showChakraAlignment, setShowChakraAlignment] = useState(false);
+  const [showMeditationTimer, setShowMeditationTimer] = useState(false);
+  const [showVirtualPilgrimage, setShowVirtualPilgrimage] = useState(false);
+  const [showSpiritualJourney, setShowSpiritualJourney] = useState(false);
+  const [showDreamJournal, setShowDreamJournal] = useState(false);
+  const [showMantraGenerator, setShowMantraGenerator] = useState(false);
+  const [showSacredCalendar, setShowSacredCalendar] = useState(false);
+  const [showEnergyVisualization, setShowEnergyVisualization] = useState(false);
+
+  // New state for unique features
+  const [meditation, setMeditation] = useState<MeditationState>({
+    isActive: false,
+    duration: 300, // 5 minutes
+    currentTime: 0,
+    breathingPhase: 'inhale',
+    soundEnabled: true
+  });
+
+  const [virtualPilgrimage, setVirtualPilgrimage] = useState<VirtualPilgrimageState>({
+    isActive: false,
+    currentLocation: '',
+    visitedPlaces: [],
+    currentStep: 0,
+    totalSteps: 10
+  });
+
+  const [spiritualJourney, setSpiritualJourney] = useState<SpiritualJourneyState>({
+    level: 1,
+    experience: 0,
+    badges: [],
+    dailyStreak: 0,
+    completedActivities: []
+  });
+
+  const [weatherSpiritual, setWeatherSpiritual] = useState<WeatherSpiritualState>({
+    weather: 'sunny',
+    spiritualMessage: 'Let your inner light shine as bright as the sun',
+    suggestedPractice: 'Sun Salutation Meditation',
+    mood: 'energetic'
+  });
+
+  const [currentMood, setCurrentMood] = useState('peaceful');
+  const [dailyWisdom, setDailyWisdom] = useState({
+    quote: "The light that shines in the eye is really the light of the heart.",
+    author: "Rumi",
+    religion: "Sufism"
+  });
 
   const [dictionary, setDictionary] = useState<DictionaryState>({
     isOpen: false,
@@ -60,57 +163,6 @@ export default function Home() {
     isLoading: false,
     error: null
   });
-
-  const guides = [
-    {
-      id: 1,
-      title: "Bhagavad Gita",
-      religion: "Hinduism",
-      description: "The sacred Hindu scripture that contains the spiritual teachings of Lord Krishna to Arjuna.",
-      icon: <BookOpen className="h-5 w-5" />,
-      pdfUrl: "https://ebooks.tirumala.org/downloads/The%20Bhagavad%20Gita.pdf"
-    },
-    {
-      id: 2,
-      title: "Holy Bible",
-      religion: "Christianity",
-      description: "The sacred text of Christianity, containing the Old and New Testaments.",
-      icon: <BookOpen className="h-5 w-5" />,
-      pdfUrl: "https://www.bible.com/"
-    },
-    {
-      id: 3,
-      title: "Holy Quran",
-      religion: "Islam",
-      description: "The central religious text of Islam, believed to be a revelation from Allah.",
-      icon: <BookOpen className="h-5 w-5" />,
-      pdfUrl: "https://quran.com/"
-    },
-    {
-      id: 4,
-      title: "Tripitaka",
-      religion: "Buddhism",
-      description: "The traditional term for the Buddhist scriptures, the earliest collection of Buddhist teachings.",
-      icon: <BookOpen className="h-5 w-5" />,
-      pdfUrl: "https://www.accesstoinsight.org/"
-    },
-    {
-      id: 5,
-      title: "Torah",
-      religion: "Judaism",
-      description: "The central text of Judaism, comprising the first five books of the Hebrew Bible.",
-      icon: <BookOpen className="h-5 w-5" />,
-      pdfUrl: "https://www.sefaria.org/"
-    },
-    {
-      id: 6,
-      title: "Guru Granth Sahib",
-      religion: "Sikhism",
-      description: "The central religious scripture of Sikhism, regarded as the final, sovereign guru.",
-      icon: <BookOpen className="h-5 w-5" />,
-      pdfUrl: "https://www.sikhnet.com/gurbani"
-    }
-  ];
 
   const timelineEvents = [
     {
@@ -231,8 +283,131 @@ export default function Home() {
     }
   ];
 
+  const guides = [
+    {
+      id: 1,
+      title: "Bhagavad Gita",
+      religion: "Hinduism",
+      description: "The sacred Hindu scripture that contains the spiritual teachings of Lord Krishna to Arjuna.",
+      icon: <BookOpen className="h-5 w-5" />,
+      pdfUrl: "https://ebooks.tirumala.org/downloads/The%20Bhagavad%20Gita.pdf"
+    },
+    {
+      id: 2,
+      title: "Holy Bible",
+      religion: "Christianity",
+      description: "The sacred text of Christianity, containing the Old and New Testaments.",
+      icon: <BookOpen className="h-5 w-5" />,
+      pdfUrl: "https://www.bible.com/"
+    },
+    {
+      id: 3,
+      title: "Holy Quran",
+      religion: "Islam",
+      description: "The central religious text of Islam, believed to be a revelation from Allah.",
+      icon: <BookOpen className="h-5 w-5" />,
+      pdfUrl: "https://quran.com/"
+    },
+    {
+      id: 4,
+      title: "Tripitaka",
+      religion: "Buddhism",
+      description: "The traditional term for the Buddhist scriptures, the earliest collection of Buddhist teachings.",
+      icon: <BookOpen className="h-5 w-5" />,
+      pdfUrl: "https://www.accesstoinsight.org/"
+    },
+    {
+      id: 5,
+      title: "Torah",
+      religion: "Judaism",
+      description: "The central text of Judaism, comprising the first five books of the Hebrew Bible.",
+      icon: <BookOpen className="h-5 w-5" />,
+      pdfUrl: "https://www.sefaria.org/"
+    },
+    {
+      id: 6,
+      title: "Guru Granth Sahib",
+      religion: "Sikhism",
+      description: "The central religious scripture of Sikhism, regarded as the final, sovereign guru.",
+      icon: <BookOpen className="h-5 w-5" />,
+      pdfUrl: "https://www.sikhnet.com/gurbani"
+    }
+  ];
+
+  // Unique features data
+  const sacredGeometryPatterns = [
+    { name: "Flower of Life", meaning: "Unity and creation", pattern: "🌸" },
+    { name: "Sri Yantra", meaning: "Divine feminine energy", pattern: "🔺" },
+    { name: "Merkaba", meaning: "Light-spirit-body", pattern: "⭐" },
+    { name: "Mandala", meaning: "Circle of completion", pattern: "🎯" },
+    { name: "Celtic Knot", meaning: "Eternal cycle", pattern: "🌀" },
+    { name: "Tree of Life", meaning: "Connection of all life", pattern: "🌳" }
+  ];
+
+  const chakras = [
+    { name: "Root", color: "red", element: "Earth", mantra: "LAM" },
+    { name: "Sacral", color: "orange", element: "Water", mantra: "VAM" },
+    { name: "Solar Plexus", color: "yellow", element: "Fire", mantra: "RAM" },
+    { name: "Heart", color: "green", element: "Air", mantra: "YAM" },
+    { name: "Throat", color: "blue", element: "Space", mantra: "HAM" },
+    { name: "Third Eye", color: "indigo", element: "Light", mantra: "OM" },
+    { name: "Crown", color: "violet", element: "Thought", mantra: "SILENCE" }
+  ];
+
+  const virtualPilgrimageSites = [
+    { name: "Varanasi, India", religion: "Hinduism", description: "The spiritual capital of India" },
+    { name: "Jerusalem", religion: "Christianity/Judaism/Islam", description: "Holy city for three faiths" },
+    { name: "Mecca, Saudi Arabia", religion: "Islam", description: "Holiest site in Islam" },
+    { name: "Bodh Gaya, India", religion: "Buddhism", description: "Where Buddha attained enlightenment" },
+    { name: "Golden Temple, India", religion: "Sikhism", description: "Holiest Sikh shrine" },
+    { name: "Mount Kailash, Tibet", religion: "Hinduism/Buddhism", description: "Sacred mountain" }
+  ];
+
+  const moodOptions = [
+    { name: "Peaceful", icon: "🕊️", color: "blue" },
+    { name: "Grateful", icon: "🙏", color: "green" },
+    { name: "Contemplative", icon: "🤔", color: "purple" },
+    { name: "Joyful", icon: "😊", color: "yellow" },
+    { name: "Seeking", icon: "🔍", color: "orange" },
+    { name: "Compassionate", icon: "❤️", color: "red" }
+  ];
+
   useEffect(() => {
     setMounted(true);
+    // Load user preferences
+    const savedFavorites = localStorage.getItem('divinora-favorites');
+    if (savedFavorites) {
+      setFavorites(JSON.parse(savedFavorites));
+    }
+    
+    // Initialize spiritual journey
+    const savedJourney = localStorage.getItem('divinora-journey');
+    if (savedJourney) {
+      setSpiritualJourney(JSON.parse(savedJourney));
+    }
+
+    // Set daily wisdom
+    const today = new Date().toDateString();
+    const savedWisdom = localStorage.getItem('divinora-daily-wisdom');
+    const savedDate = localStorage.getItem('divinora-wisdom-date');
+    
+    if (savedDate !== today) {
+      // Generate new daily wisdom
+      const wisdomQuotes = [
+        { quote: "The light that shines in the eye is really the light of the heart.", author: "Rumi", religion: "Sufism" },
+        { quote: "Be yourself and you will know the non-self.", author: "Buddha", religion: "Buddhism" },
+        { quote: "God is closer to you than your jugular vein.", author: "Quran", religion: "Islam" },
+        { quote: "The kingdom of God is within you.", author: "Jesus Christ", religion: "Christianity" },
+        { quote: "Truth is one, sages call it by many names.", author: "Rigveda", religion: "Hinduism" },
+        { quote: "Recognize the whole human race as one.", author: "Guru Nanak", religion: "Sikhism" }
+      ];
+      const randomWisdom = wisdomQuotes[Math.floor(Math.random() * wisdomQuotes.length)];
+      setDailyWisdom(randomWisdom);
+      localStorage.setItem('divinora-daily-wisdom', JSON.stringify(randomWisdom));
+      localStorage.setItem('divinora-wisdom-date', today);
+    } else if (savedWisdom) {
+      setDailyWisdom(JSON.parse(savedWisdom));
+    }
   }, []);
 
   useEffect(() => {
@@ -244,13 +419,51 @@ export default function Home() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    // Save favorites to localStorage
+    localStorage.setItem('divinora-favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  useEffect(() => {
+    // Save spiritual journey to localStorage
+    localStorage.setItem('divinora-journey', JSON.stringify(spiritualJourney));
+  }, [spiritualJourney]);
+
+  // Meditation timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (meditation.isActive) {
+      interval = setInterval(() => {
+        setMeditation(prev => {
+          if (prev.currentTime >= prev.duration) {
+            return { ...prev, isActive: false, currentTime: 0 };
+          }
+          
+          // Breathing pattern: 4 seconds inhale, 4 seconds hold, 4 seconds exhale
+          const cycleTime = prev.currentTime % 12;
+          let breathingPhase: 'inhale' | 'hold' | 'exhale';
+          if (cycleTime < 4) breathingPhase = 'inhale';
+          else if (cycleTime < 8) breathingPhase = 'hold';
+          else breathingPhase = 'exhale';
+          
+          return {
+            ...prev,
+            currentTime: prev.currentTime + 1,
+            breathingPhase
+          };
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [meditation.isActive]);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const filterContent = (items: any[], term: string, religion: string = "all") => {
     if (!items) return [];
-    return items.filter((item) => {
+    let filtered = items.filter((item) => {
       const matchesSearch = 
         item.name?.toLowerCase().includes(term.toLowerCase()) ||
         item.title?.toLowerCase().includes(term.toLowerCase()) ||
@@ -262,16 +475,53 @@ export default function Home() {
       
       return matchesSearch && matchesReligion;
     });
+
+    // Apply sorting
+    switch (sortMode) {
+      case "name":
+        filtered.sort((a, b) => (a.name || a.title).localeCompare(b.name || b.title));
+        break;
+      case "religion":
+        filtered.sort((a, b) => a.religion.localeCompare(b.religion));
+        break;
+      case "popularity":
+        // Sort by favorites first, then by name
+        filtered.sort((a, b) => {
+          const aFav = favorites.includes(a.id || a.name);
+          const bFav = favorites.includes(b.id || b.name);
+          if (aFav && !bFav) return -1;
+          if (!aFav && bFav) return 1;
+          return (a.name || a.title).localeCompare(b.name || b.title);
+        });
+        break;
+    }
+
+    return filtered;
   };
 
   const handleItemClick = (item: any, type: "deity" | "teaching" | "story" | "history") => {
     setSelectedItem(item);
     setModalType(type);
+    
+    // Add to spiritual journey experience
+    setSpiritualJourney(prev => ({
+      ...prev,
+      experience: prev.experience + 10,
+      completedActivities: [...prev.completedActivities, `viewed_${type}_${item.id || item.name}`]
+    }));
   };
 
   const closeModal = () => {
     setSelectedItem(null);
     setModalType(null);
+  };
+
+  const toggleFavorite = (itemId: string) => {
+    setFavorites(prev => 
+      prev.includes(itemId) 
+        ? prev.filter(id => id !== itemId)
+        : [...prev, itemId]
+    );
   };
 
   const openPathSelection = () => {
@@ -373,9 +623,50 @@ export default function Home() {
     });
   };
 
-  if (!mounted) {
-    return null;
-  }
+  const startMeditation = (duration: number) => {
+    setMeditation({
+      isActive: true,
+      duration,
+      currentTime: 0,
+      breathingPhase: 'inhale',
+      soundEnabled: true
+    });
+  };
+
+  const stopMeditation = () => {
+    setMeditation(prev => ({ ...prev, isActive: false, currentTime: 0 }));
+  };
+
+  const startVirtualPilgrimage = (location: string) => {
+    setVirtualPilgrimage({
+      isActive: true,
+      currentLocation: location,
+      visitedPlaces: [location],
+      currentStep: 1,
+      totalSteps: 10
+    });
+    setShowVirtualPilgrimage(true);
+  };
+
+  const playAudio = (track: any) => {
+    if (currentAudio) {
+      currentAudio.pause();
+    }
+    
+    // Create a mock audio experience since we can't actually play audio files
+    setCurrentTrack(track);
+    setIsPlaying(true);
+    setShowMiniPlayer(true);
+    
+    // Simulate audio playing
+    setTimeout(() => {
+      setIsPlaying(false);
+    }, 30000); // Stop after 30 seconds for demo
+  };
+
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
 
   const handleTranslate = async () => {
     if (!dictionary.englishWord.trim()) return;
@@ -412,7 +703,15 @@ export default function Home() {
       "light": "ज्योतिः",
       "truth": "सत्यम्",
       "hello": "नमस्ते",
-      "thank you": "धन्यवादः"
+      "thank you": "धन्यवादः",
+      "god": "भगवान्",
+      "prayer": "प्रार्थना",
+      "meditation": "ध्यानम्",
+      "soul": "आत्मा",
+      "divine": "दिव्य",
+      "sacred": "पवित्र",
+      "temple": "मन्दिरम्",
+      "blessing": "आशीर्वाद"
     };
 
     const lowerWord = word.toLowerCase();
@@ -440,8 +739,178 @@ export default function Home() {
     window.speechSynthesis.speak(utterance);
   };
 
+  const renderContentGrid = (items: any[], type: string) => {
+    const filteredItems = filterContent(items, searchTerm, selectedReligion);
+    
+    if (viewMode === "list") {
+      return (
+        <div className="space-y-4">
+          {filteredItems.map((item) => (
+            <Card
+              key={item.id}
+              className="group p-4 hover:shadow-lg transition-all duration-300 cursor-pointer border-l-4 border-l-primary/50 hover:border-l-primary bg-gradient-to-r from-card to-card/50"
+              onClick={() => handleItemClick(item, type as any)}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {item.religion || "Universal"}
+                    </Badge>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(item.id || item.name);
+                      }}
+                      className="p-1 h-auto"
+                    >
+                      <Heart 
+                        className={`h-4 w-4 transition-colors ${
+                          favorites.includes(item.id || item.name) 
+                            ? 'text-red-500 fill-red-500' 
+                            : 'text-muted-foreground hover:text-red-500'
+                        }`} 
+                      />
+                    </Button>
+                  </div>
+                  <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
+                    {item.name || item.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm line-clamp-2">{item.description}</p>
+                </div>
+                <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              </div>
+            </Card>
+          ))}
+        </div>
+      );
+    }
+
+    return (
+      <div className={`grid gap-6 transition-all duration-300 ${
+        viewMode === "card" 
+          ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3" 
+          : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+      }`}>
+        {filteredItems.map((item) => (
+          <Card
+            key={item.id}
+            className={`group hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-primary/50 hover:scale-[1.02] bg-gradient-to-br from-card to-card/50 ${
+              viewMode === "card" ? "p-6" : "p-4"
+            }`}
+            onClick={() => handleItemClick(item, type as any)}
+          >
+            <CardHeader className={viewMode === "card" ? "pb-4" : "pb-2"}>
+              <div className="flex items-center justify-between mb-2">
+                <Badge variant="secondary" className="text-xs">
+                  {item.religion || "Universal"}
+                </Badge>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(item.id || item.name);
+                    }}
+                    className="p-1 h-auto"
+                  >
+                    <Heart 
+                      className={`h-4 w-4 transition-colors ${
+                        favorites.includes(item.id || item.name) 
+                          ? 'text-red-500 fill-red-500' 
+                          : 'text-muted-foreground hover:text-red-500'
+                      }`} 
+                    />
+                  </Button>
+                  <Sparkles className="h-4 w-4 text-primary" />
+                </div>
+              </div>
+              <CardTitle className={`group-hover:text-primary transition-colors ${
+                viewMode === "card" ? "text-xl" : "text-lg"
+              }`}>
+                {item.name || item.title}
+              </CardTitle>
+            </CardHeader>
+            
+            <CardContent>
+              <p className={`text-muted-foreground mb-4 ${
+                viewMode === "card" ? "line-clamp-3" : "line-clamp-2"
+              }`}>
+                {item.description}
+              </p>
+              
+              {item.attributes && (
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {item.attributes.slice(0, viewMode === "card" ? 4 : 3).map((attr: string, index: number) => (
+                    <Badge key={index} variant="outline" className="text-xs">
+                      {attr}
+                    </Badge>
+                  ))}
+                  {item.attributes.length > (viewMode === "card" ? 4 : 3) && (
+                    <Badge variant="outline" className="text-xs">
+                      +{item.attributes.length - (viewMode === "card" ? 4 : 3)} more
+                    </Badge>
+                  )}
+                </div>
+              )}
+              
+              {item.religions && (
+                <div className="flex flex-wrap gap-1 mb-4">
+                  {item.religions.slice(0, 4).map((religion: string, index: number) => (
+                    <Badge key={index} variant="outline" className="text-xs">
+                      {religion}
+                    </Badge>
+                  ))}
+                  {item.religions.length > 4 && (
+                    <Badge variant="outline" className="text-xs">
+                      +{item.religions.length - 4}
+                    </Badge>
+                  )}
+                </div>
+              )}
+              
+              <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <BookOpen className="mr-2 h-4 w-4" />
+                Explore
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  };
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full blur-sm opacity-75 animate-pulse"></div>
+            <div className="relative bg-gradient-to-r from-primary to-secondary p-4 rounded-full">
+              <BookOpen className="h-12 w-12 text-white animate-pulse" />
+            </div>
+          </div>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Loading Divinora...
+          </h2>
+          <p className="text-muted-foreground">Preparing your spiritual journey</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <main className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20">
+    <main className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-48 h-48 bg-secondary/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-accent/5 rounded-full blur-3xl animate-pulse delay-2000"></div>
+      </div>
+
       {/* Enhanced Navigation */}
       <nav className="border-b sticky top-0 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 z-50 shadow-lg">
         <div className="px-4 sm:px-6 lg:px-8">
@@ -449,7 +918,7 @@ export default function Home() {
             {/* Logo */}
             <div className="flex items-center space-x-3">
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full blur-sm opacity-75"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-full blur-sm opacity-75 animate-pulse"></div>
                 <div className="relative bg-gradient-to-r from-primary to-secondary p-2 rounded-full">
                   <BookOpen className="h-8 w-8 text-white" />
                 </div>
@@ -462,7 +931,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Action Buttons */}
+            {/* Enhanced Action Buttons */}
             <div className="flex flex-wrap justify-center gap-2">
               <Button
                 onClick={() => setShowTimeline(true)}
@@ -489,7 +958,7 @@ export default function Home() {
                 className="flex items-center gap-2 hover:scale-105 transition-transform"
               >
                 <Star className="h-4 w-4" />
-                <span className="text-sm">Find Your Path</span>
+                <span className="text-sm">Find Path</span>
               </Button>
               <Button
                 onClick={() => setDictionary(prev => ({ ...prev, isOpen: true }))}
@@ -500,9 +969,27 @@ export default function Home() {
                 <Globe className="h-4 w-4" />
                 <span className="text-sm">Translate</span>
               </Button>
+              <Button
+                onClick={() => setShowMeditationTimer(true)}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 hover:scale-105 transition-transform"
+              >
+                <Brain className="h-4 w-4" />
+                <span className="text-sm">Meditate</span>
+              </Button>
+              <Button
+                onClick={() => setShowVirtualTour(true)}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 hover:scale-105 transition-transform"
+              >
+                <Map className="h-4 w-4" />
+                <span className="text-sm">Virtual Tour</span>
+              </Button>
             </div>
 
-            {/* Search and Theme */}
+            {/* Enhanced Search and Controls */}
             <div className="flex items-center space-x-3 w-full sm:w-auto">
               <div className="relative flex-1 sm:flex-none w-full sm:w-64">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -516,6 +1003,14 @@ export default function Home() {
               <Button
                 variant="ghost"
                 size="icon"
+                onClick={() => setShowFilters(!showFilters)}
+                className="hover:scale-110 transition-transform duration-300 rounded-full"
+              >
+                <Filter className="h-5 w-5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={() => setTheme(theme === "light" ? "dark" : "light")}
                 className="hover:scale-110 transition-transform duration-300 rounded-full"
               >
@@ -523,28 +1018,145 @@ export default function Home() {
               </Button>
             </div>
           </div>
+
+          {/* Enhanced Filters Panel */}
+          {showFilters && (
+            <div className="border-t py-4 space-y-4 animate-in slide-in-from-top-2">
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">View:</span>
+                  <div className="flex border rounded-lg p-1">
+                    <Button
+                      variant={viewMode === "grid" ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setViewMode("grid")}
+                      className="px-3 py-1"
+                    >
+                      <Grid className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant={viewMode === "list" ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setViewMode("list")}
+                      className="px-3 py-1"
+                    >
+                      <List className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant={viewMode === "card" ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setViewMode("card")}
+                      className="px-3 py-1"
+                    >
+                      <Maximize2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">Sort:</span>
+                  <select
+                    value={sortMode}
+                    onChange={(e) => setSortMode(e.target.value as SortMode)}
+                    className="px-3 py-1 border rounded-md bg-background text-sm"
+                  >
+                    <option value="name">Name</option>
+                    <option value="religion">Religion</option>
+                    <option value="popularity">Popularity</option>
+                  </select>
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsFullscreen(!isFullscreen)}
+                  className="flex items-center gap-2"
+                >
+                  {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                  <span className="text-sm">{isFullscreen ? "Exit" : "Fullscreen"}</span>
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
+
+      {/* Daily Wisdom Banner */}
+      {showDailyWisdom && (
+        <div className="bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 border-b">
+          <div className="px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="p-2 bg-primary/20 rounded-full">
+                  <Lightbulb className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-primary">Daily Wisdom</p>
+                  <p className="text-sm text-muted-foreground italic">"{dailyWisdom.quote}"</p>
+                  <p className="text-xs text-muted-foreground">— {dailyWisdom.author}, {dailyWisdom.religion}</p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowDailyWisdom(false)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Spiritual Journey Progress */}
+      <div className="px-4 sm:px-6 lg:px-8 py-4 border-b bg-gradient-to-r from-background to-secondary/5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2">
+              <Crown className="h-5 w-5 text-amber-500" />
+              <span className="text-sm font-medium">Level {spiritualJourney.level}</span>
+            </div>
+            <div className="flex-1 max-w-xs">
+              <Progress value={(spiritualJourney.experience % 100)} className="h-2" />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Flame className="h-4 w-4 text-orange-500" />
+              <span className="text-sm">{spiritualJourney.dailyStreak} day streak</span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            {spiritualJourney.badges.slice(0, 3).map((badge, index) => (
+              <div key={index} className="w-6 h-6 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full flex items-center justify-center">
+                <Award className="h-3 w-3 text-white" />
+              </div>
+            ))}
+            {spiritualJourney.badges.length > 3 && (
+              <span className="text-xs text-muted-foreground">+{spiritualJourney.badges.length - 3}</span>
+            )}
+          </div>
+        </div>
+      </div>
 
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10"></div>
         <div className="relative py-16 sm:py-24">
           <header className="text-center mb-12 px-4">
-            <div className="inline-flex items-center space-x-2 bg-primary/10 px-4 py-2 rounded-full mb-6">
-              <Sparkles className="h-4 w-4 text-primary" />
+            <div className="inline-flex items-center space-x-2 bg-primary/10 px-4 py-2 rounded-full mb-6 animate-in fade-in-0 slide-in-from-top-4">
+              <Sparkles className="h-4 w-4 text-primary animate-pulse" />
               <span className="text-sm font-medium text-primary">Welcome to Universal Spirituality</span>
             </div>
-            <h1 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">
+            <h1 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent animate-in fade-in-0 slide-in-from-top-6 duration-1000">
               Explore Divine Wisdom
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-in fade-in-0 slide-in-from-top-8 duration-1000 delay-300">
               Discover the profound teachings and timeless wisdom from all world religions and spiritual traditions. 
               A sacred space where seekers of all faiths can find inspiration, guidance, and universal truth.
             </p>
             
-            {/* Religion Filter */}
-            <div className="flex flex-wrap justify-center gap-2 mt-8">
+            {/* Enhanced Religion Filter */}
+            <div className="flex flex-wrap justify-center gap-2 mt-8 animate-in fade-in-0 slide-in-from-bottom-4 duration-1000 delay-500">
               {religions.map((religion) => (
                 <Button
                   key={religion.id}
@@ -552,7 +1164,7 @@ export default function Home() {
                   size="sm"
                   onClick={() => setSelectedReligion(religion.id)}
                   className={`flex items-center gap-2 transition-all duration-300 hover:scale-105 ${
-                    selectedReligion === religion.id ? religion.color + " text-white" : ""
+                    selectedReligion === religion.id ? religion.color + " text-white shadow-lg" : ""
                   }`}
                 >
                   {typeof religion.icon === 'string' ? (
@@ -564,12 +1176,55 @@ export default function Home() {
                 </Button>
               ))}
             </div>
+
+            {/* Quick Action Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-4xl mx-auto">
+              <Card className="p-4 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 bg-gradient-to-br from-card to-primary/5" onClick={() => setShowMeditationTimer(true)}>
+                <div className="text-center space-y-2">
+                  <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto">
+                    <Brain className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-sm">Meditate</h3>
+                  <p className="text-xs text-muted-foreground">Guided meditation</p>
+                </div>
+              </Card>
+              
+              <Card className="p-4 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 bg-gradient-to-br from-card to-secondary/5" onClick={() => setShowVirtualTour(true)}>
+                <div className="text-center space-y-2">
+                  <div className="p-3 bg-secondary/10 rounded-full w-fit mx-auto">
+                    <Map className="h-6 w-6 text-secondary" />
+                  </div>
+                  <h3 className="font-semibold text-sm">Virtual Tour</h3>
+                  <p className="text-xs text-muted-foreground">Sacred places</p>
+                </div>
+              </Card>
+              
+              <Card className="p-4 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 bg-gradient-to-br from-card to-amber-500/5" onClick={() => setShowSacredGeometry(true)}>
+                <div className="text-center space-y-2">
+                  <div className="p-3 bg-amber-500/10 rounded-full w-fit mx-auto">
+                    <Compass className="h-6 w-6 text-amber-600" />
+                  </div>
+                  <h3 className="font-semibold text-sm">Sacred Geometry</h3>
+                  <p className="text-xs text-muted-foreground">Divine patterns</p>
+                </div>
+              </Card>
+              
+              <Card className="p-4 hover:shadow-lg transition-all duration-300 cursor-pointer hover:scale-105 bg-gradient-to-br from-card to-green-500/5" onClick={() => setShowMoodTracker(true)}>
+                <div className="text-center space-y-2">
+                  <div className="p-3 bg-green-500/10 rounded-full w-fit mx-auto">
+                    <Heart className="h-6 w-6 text-green-600" />
+                  </div>
+                  <h3 className="font-semibold text-sm">Mood Tracker</h3>
+                  <p className="text-xs text-muted-foreground">Spiritual wellness</p>
+                </div>
+              </Card>
+            </div>
           </header>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="nav-container py-12">
+      <div className={`nav-container py-12 ${isFullscreen ? 'max-w-full px-2' : ''}`}>
         <Tabs defaultValue="deities" className="space-y-8">
           <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 lg:max-w-5xl lg:mx-auto gap-2 h-auto p-2">
             <TabsTrigger value="deities" className="card-hover flex items-center gap-2 py-3">
@@ -600,164 +1255,22 @@ export default function Home() {
 
           {/* Sacred Figures Tab */}
           <TabsContent value="deities" className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filterContent(deities, searchTerm, selectedReligion).map((deity) => (
-                <Card
-                  key={deity.id}
-                  className="group p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-primary/50 hover:scale-[1.02] bg-gradient-to-br from-card to-card/50"
-                  onClick={() => handleItemClick(deity, "deity")}
-                >
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="secondary" className="text-xs">
-                        {deity.religion}
-                      </Badge>
-                      <Heart className="h-4 w-4 text-muted-foreground hover:text-red-500 transition-colors" />
-                    </div>
-                    <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                      {deity.name}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4 line-clamp-3">{deity.description}</p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {deity.attributes.slice(0, 3).map((attr: string, index: number) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {attr}
-                        </Badge>
-                      ))}
-                      {deity.attributes.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{deity.attributes.length - 3} more
-                        </Badge>
-                      )}
-                    </div>
-                    <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <Sparkles className="mr-2 h-4 w-4" />
-                      Explore Wisdom
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {renderContentGrid(deities, "deity")}
           </TabsContent>
 
           {/* Teachings Tab */}
           <TabsContent value="teachings" className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filterContent(teachings, searchTerm, selectedReligion).map((teaching) => (
-                <Card
-                  key={teaching.id}
-                  className="group p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-primary/50 hover:scale-[1.02] bg-gradient-to-br from-card to-card/50"
-                  onClick={() => handleItemClick(teaching, "teaching")}
-                >
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="secondary" className="text-xs">
-                        Universal Teaching
-                      </Badge>
-                      <Users className="h-5 w-5 text-primary" />
-                    </div>
-                    <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                      {teaching.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4 line-clamp-3">{teaching.description}</p>
-                    <div className="flex flex-wrap gap-1 mb-4">
-                      {teaching.religions.slice(0, 4).map((religion: string, index: number) => (
-                        <Badge key={index} variant="outline" className="text-xs">
-                          {religion}
-                        </Badge>
-                      ))}
-                      {teaching.religions.length > 4 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{teaching.religions.length - 4}
-                        </Badge>
-                      )}
-                    </div>
-                    <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <BookOpen className="mr-2 h-4 w-4" />
-                      Learn More
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {renderContentGrid(teachings, "teaching")}
           </TabsContent>
 
           {/* Sacred Stories Tab */}
           <TabsContent value="stories" className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filterContent(sacredStories, searchTerm, selectedReligion).map((story) => (
-                <Card
-                  key={story.id}
-                  className="group p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-primary/50 hover:scale-[1.02] bg-gradient-to-br from-card to-card/50"
-                  onClick={() => handleItemClick(story, "story")}
-                >
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="secondary" className="text-xs">
-                        {story.religion}
-                      </Badge>
-                      <BookOpen className="h-5 w-5 text-primary" />
-                    </div>
-                    <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                      {story.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4 line-clamp-3">{story.description}</p>
-                    <div className="flex items-center space-x-2 mb-4 text-sm text-muted-foreground">
-                      <span>{story.tradition}</span>
-                      <span>•</span>
-                      <span>{story.era}</span>
-                    </div>
-                    <div className="mb-4">
-                      <Badge variant="outline" className="text-xs">
-                        {story.universalTheme}
-                      </Badge>
-                    </div>
-                    <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <BookOpen className="mr-2 h-4 w-4" />
-                      Read Story
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {renderContentGrid(sacredStories, "story")}
           </TabsContent>
 
           {/* History Tab */}
           <TabsContent value="history" className="space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filterContent(histories, searchTerm, selectedReligion).map((history) => (
-                <Card
-                  key={history.id}
-                  className="group p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border-2 hover:border-primary/50 hover:scale-[1.02] bg-gradient-to-br from-card to-card/50"
-                  onClick={() => handleItemClick(history, "history")}
-                >
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <Badge variant="secondary" className="text-xs">
-                        Religious History
-                      </Badge>
-                      <History className="h-5 w-5 text-primary" />
-                    </div>
-                    <CardTitle className="text-xl group-hover:text-primary transition-colors">
-                      {history.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground mb-4 line-clamp-3">{history.description}</p>
-                    <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      <History className="mr-2 h-4 w-4" />
-                      Explore History
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            {renderContentGrid(histories, "history")}
           </TabsContent>
 
           {/* Sacred Texts Tab */}
@@ -770,7 +1283,26 @@ export default function Home() {
                       <Badge variant="secondary" className="text-xs">
                         {book.religion}
                       </Badge>
-                      <BookOpen className="h-5 w-5 text-primary" />
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFavorite(book.id.toString());
+                          }}
+                          className="p-1 h-auto"
+                        >
+                          <Heart 
+                            className={`h-4 w-4 transition-colors ${
+                              favorites.includes(book.id.toString()) 
+                                ? 'text-red-500 fill-red-500' 
+                                : 'text-muted-foreground hover:text-red-500'
+                            }`} 
+                          />
+                        </Button>
+                        <BookOpen className="h-5 w-5 text-primary" />
+                      </div>
                     </div>
                     <CardTitle className="text-xl group-hover:text-primary transition-colors">
                       {book.name}
@@ -793,8 +1325,11 @@ export default function Home() {
                         <BookOpen className="mr-2 h-4 w-4" />
                         Read
                       </Button>
-                      <Button variant="ghost" size="icon" className="hover:text-red-500 transition-colors">
-                        <Heart className="h-4 w-4" />
+                      <Button variant="ghost" size="icon" className="hover:text-blue-500 transition-colors">
+                        <Download className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="icon" className="hover:text-green-500 transition-colors">
+                        <Share2 className="h-4 w-4" />
                       </Button>
                     </div>
                   </CardContent>
@@ -803,7 +1338,7 @@ export default function Home() {
             </div>
           </TabsContent>
 
-          {/* Devotional Videos Tab */}
+          {/* Enhanced Devotional Videos Tab */}
           <TabsContent value="devotional" className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filterContent(bhaktiVideos, searchTerm, selectedReligion).map((video) => (
@@ -816,6 +1351,30 @@ export default function Home() {
                       allowFullScreen
                       className="absolute inset-0 w-full h-full rounded-lg"
                     />
+                    <div className="absolute top-2 right-2 flex gap-2">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => playAudio(video)}
+                        className="p-2 h-auto bg-black/50 hover:bg-black/70 text-white border-0"
+                      >
+                        <Play className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => toggleFavorite(video.id.toString())}
+                        className="p-2 h-auto bg-black/50 hover:bg-black/70 text-white border-0"
+                      >
+                        <Heart 
+                          className={`h-4 w-4 ${
+                            favorites.includes(video.id.toString()) 
+                              ? 'text-red-500 fill-red-500' 
+                              : 'text-white'
+                          }`} 
+                        />
+                      </Button>
+                    </div>
                   </div>
                   <div className="flex items-center justify-between mb-2">
                     <Badge variant="secondary" className="text-xs">
@@ -829,9 +1388,19 @@ export default function Home() {
                     {video.title}
                   </h3>
                   <p className="text-muted-foreground mb-4 line-clamp-2">{video.description}</p>
-                  <div className="flex items-center text-sm text-muted-foreground">
-                    <Youtube className="h-4 w-4 mr-2 text-red-500" />
-                    <span>{video.channel}</span>
+                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                    <div className="flex items-center">
+                      <Youtube className="h-4 w-4 mr-2 text-red-500" />
+                      <span>{video.channel}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button variant="ghost" size="sm" className="p-1 h-auto">
+                        <Share2 className="h-4 w-4" />
+                      </Button>
+                      <Button variant="ghost" size="sm" className="p-1 h-auto">
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </Card>
               ))}
@@ -845,6 +1414,43 @@ export default function Home() {
           <NavagrahaSection />
         </section>
       </div>
+
+      {/* Mini Audio Player */}
+      {showMiniPlayer && currentTrack && (
+        <div className="fixed bottom-4 right-4 bg-card border rounded-lg shadow-lg p-4 w-80 z-40 animate-in slide-in-from-bottom-4">
+          <div className="flex items-center space-x-3">
+            <div className="flex-shrink-0">
+              <div className="w-12 h-12 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
+                <Music className="h-6 w-6 text-white" />
+              </div>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium truncate">{currentTrack.title}</p>
+              <p className="text-xs text-muted-foreground truncate">{currentTrack.channel}</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button variant="ghost" size="sm" onClick={togglePlayPause}>
+                {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setShowMiniPlayer(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <div className="mt-3">
+            <div className="flex items-center space-x-2">
+              <Volume2 className="h-4 w-4 text-muted-foreground" />
+              <Slider
+                value={volume}
+                onValueChange={setVolume}
+                max={100}
+                step={1}
+                className="flex-1"
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* All Modals */}
       {modalType === "deity" && selectedItem && (
@@ -877,6 +1483,374 @@ export default function Home() {
           isOpen={modalType === "history"}
           onClose={closeModal}
         />
+      )}
+
+      {/* Meditation Timer Modal */}
+      {showMeditationTimer && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-background border rounded-xl shadow-2xl w-full max-w-md animate-in fade-in-0 zoom-in-95">
+            <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-primary/5 to-secondary/5">
+              <h2 className="text-2xl font-semibold flex items-center gap-2">
+                <Brain className="h-6 w-6 text-primary" />
+                Meditation Timer
+              </h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowMeditationTimer(false)}
+                className="rounded-full hover:bg-destructive/10 hover:text-destructive"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              {!meditation.isActive ? (
+                <>
+                  <div className="text-center space-y-4">
+                    <div className="w-32 h-32 mx-auto bg-gradient-to-r from-primary/20 to-secondary/20 rounded-full flex items-center justify-center">
+                      <Brain className="h-16 w-16 text-primary" />
+                    </div>
+                    <h3 className="text-xl font-semibold">Choose Your Session</h3>
+                    <p className="text-muted-foreground">Select a duration for your meditation practice</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <Button
+                      onClick={() => startMeditation(300)}
+                      className="h-16 flex flex-col items-center justify-center space-y-1"
+                      variant="outline"
+                    >
+                      <Clock className="h-5 w-5" />
+                      <span>5 min</span>
+                    </Button>
+                    <Button
+                      onClick={() => startMeditation(600)}
+                      className="h-16 flex flex-col items-center justify-center space-y-1"
+                      variant="outline"
+                    >
+                      <Clock className="h-5 w-5" />
+                      <span>10 min</span>
+                    </Button>
+                    <Button
+                      onClick={() => startMeditation(900)}
+                      className="h-16 flex flex-col items-center justify-center space-y-1"
+                      variant="outline"
+                    >
+                      <Clock className="h-5 w-5" />
+                      <span>15 min</span>
+                    </Button>
+                    <Button
+                      onClick={() => startMeditation(1200)}
+                      className="h-16 flex flex-col items-center justify-center space-y-1"
+                      variant="outline"
+                    >
+                      <Clock className="h-5 w-5" />
+                      <span>20 min</span>
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center space-y-6">
+                  <div className="relative w-48 h-48 mx-auto">
+                    <div className="absolute inset-0 rounded-full border-8 border-primary/20"></div>
+                    <div 
+                      className="absolute inset-0 rounded-full border-8 border-primary border-t-transparent animate-spin"
+                      style={{ animationDuration: '4s' }}
+                    ></div>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="text-3xl font-bold">
+                          {Math.floor((meditation.duration - meditation.currentTime) / 60)}:
+                          {String((meditation.duration - meditation.currentTime) % 60).padStart(2, '0')}
+                        </div>
+                        <div className="text-sm text-muted-foreground capitalize">
+                          {meditation.breathingPhase}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <p className="text-lg font-medium">
+                        {meditation.breathingPhase === 'inhale' && 'Breathe In...'}
+                        {meditation.breathingPhase === 'hold' && 'Hold...'}
+                        {meditation.breathingPhase === 'exhale' && 'Breathe Out...'}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Follow the breathing pattern for a peaceful meditation
+                      </p>
+                    </div>
+
+                    <div className="flex items-center justify-center space-x-4">
+                      <Button onClick={stopMeditation} variant="outline">
+                        <Square className="h-4 w-4 mr-2" />
+                        Stop
+                      </Button>
+                      <div className="flex items-center space-x-2">
+                        <Switch
+                          checked={meditation.soundEnabled}
+                          onCheckedChange={(checked) => 
+                            setMeditation(prev => ({ ...prev, soundEnabled: checked }))
+                          }
+                        />
+                        <span className="text-sm">Sound</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sacred Geometry Modal */}
+      {showSacredGeometry && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-background border rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-in fade-in-0 zoom-in-95">
+            <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-primary/5 to-secondary/5">
+              <h2 className="text-2xl font-semibold flex items-center gap-2">
+                <Compass className="h-6 w-6 text-primary" />
+                Sacred Geometry
+              </h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowSacredGeometry(false)}
+                className="rounded-full hover:bg-destructive/10 hover:text-destructive"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6">
+              <div className="text-center mb-8">
+                <h3 className="text-xl font-semibold mb-2">Divine Patterns in Nature</h3>
+                <p className="text-muted-foreground">
+                  Explore the mathematical patterns that appear throughout creation, 
+                  representing the underlying order of the universe.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {sacredGeometryPatterns.map((pattern, index) => (
+                  <Card key={index} className="p-6 text-center hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    <div className="text-6xl mb-4">{pattern.pattern}</div>
+                    <h4 className="text-lg font-semibold mb-2">{pattern.name}</h4>
+                    <p className="text-sm text-muted-foreground">{pattern.meaning}</p>
+                    <Button variant="outline" className="mt-4 w-full">
+                      <Eye className="h-4 w-4 mr-2" />
+                      Meditate
+                    </Button>
+                  </Card>
+                ))}
+              </div>
+
+              <div className="mt-8 p-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg">
+                <h4 className="text-lg font-semibold mb-2">Sacred Geometry in Practice</h4>
+                <p className="text-sm text-muted-foreground mb-4">
+                  These patterns can be used for meditation, contemplation, and understanding 
+                  the divine order that underlies all of creation.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="outline">Meditation Focus</Badge>
+                  <Badge variant="outline">Spiritual Art</Badge>
+                  <Badge variant="outline">Divine Mathematics</Badge>
+                  <Badge variant="outline">Universal Harmony</Badge>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Chakra Alignment Modal */}
+      {showChakraAlignment && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-background border rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto animate-in fade-in-0 zoom-in-95">
+            <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-primary/5 to-secondary/5">
+              <h2 className="text-2xl font-semibold flex items-center gap-2">
+                <Zap className="h-6 w-6 text-primary" />
+                Chakra Alignment
+              </h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowChakraAlignment(false)}
+                className="rounded-full hover:bg-destructive/10 hover:text-destructive"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="text-center">
+                <h3 className="text-xl font-semibold mb-2">Energy Centers</h3>
+                <p className="text-muted-foreground">
+                  Balance your chakras for optimal spiritual and physical well-being
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {chakras.map((chakra, index) => (
+                  <div key={index} className="flex items-center space-x-4 p-4 border rounded-lg hover:bg-secondary/5 transition-colors">
+                    <div 
+                      className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold"
+                      style={{ backgroundColor: chakra.color }}
+                    >
+                      {index + 1}
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold">{chakra.name} Chakra</h4>
+                      <p className="text-sm text-muted-foreground">Element: {chakra.element}</p>
+                      <p className="text-sm font-mono">{chakra.mantra}</p>
+                    </div>
+                    <Button variant="outline" size="sm">
+                      <Play className="h-4 w-4 mr-2" />
+                      Chant
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="text-center">
+                <Button className="w-full">
+                  <Zap className="h-4 w-4 mr-2" />
+                  Start Full Chakra Meditation
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Virtual Tour Modal */}
+      {showVirtualTour && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-background border rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto animate-in fade-in-0 zoom-in-95">
+            <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-primary/5 to-secondary/5">
+              <h2 className="text-2xl font-semibold flex items-center gap-2">
+                <Map className="h-6 w-6 text-primary" />
+                Virtual Pilgrimage
+              </h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowVirtualTour(false)}
+                className="rounded-full hover:bg-destructive/10 hover:text-destructive"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6">
+              <div className="text-center mb-8">
+                <h3 className="text-xl font-semibold mb-2">Sacred Places Around the World</h3>
+                <p className="text-muted-foreground">
+                  Experience the spiritual energy of holy sites from the comfort of your home
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {virtualPilgrimageSites.map((site, index) => (
+                  <Card key={index} className="overflow-hidden hover:shadow-lg transition-all duration-300 hover:scale-105">
+                    <div className="aspect-video bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                      <div className="text-center">
+                        <MapPin className="h-12 w-12 text-primary mx-auto mb-2" />
+                        <p className="text-sm font-medium">{site.name}</p>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <Badge variant="secondary" className="text-xs">
+                          {site.religion}
+                        </Badge>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => startVirtualPilgrimage(site.name)}
+                          className="p-1 h-auto"
+                        >
+                          <Play className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <h4 className="font-semibold mb-2">{site.name}</h4>
+                      <p className="text-sm text-muted-foreground">{site.description}</p>
+                      <Button variant="outline" className="w-full mt-4">
+                        <Camera className="h-4 w-4 mr-2" />
+                        Start Virtual Visit
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mood Tracker Modal */}
+      {showMoodTracker && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-background border rounded-xl shadow-2xl w-full max-w-md animate-in fade-in-0 zoom-in-95">
+            <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-primary/5 to-secondary/5">
+              <h2 className="text-2xl font-semibold flex items-center gap-2">
+                <Heart className="h-6 w-6 text-primary" />
+                Spiritual Mood Tracker
+              </h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowMoodTracker(false)}
+                className="rounded-full hover:bg-destructive/10 hover:text-destructive"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="text-center">
+                <h3 className="text-lg font-semibold mb-2">How are you feeling spiritually today?</h3>
+                <p className="text-sm text-muted-foreground">
+                  Track your spiritual wellness and receive personalized guidance
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {moodOptions.map((mood, index) => (
+                  <Button
+                    key={index}
+                    variant={currentMood === mood.name.toLowerCase() ? "default" : "outline"}
+                    className="h-20 flex flex-col items-center justify-center space-y-2"
+                    onClick={() => setCurrentMood(mood.name.toLowerCase())}
+                  >
+                    <span className="text-2xl">{mood.icon}</span>
+                    <span className="text-sm">{mood.name}</span>
+                  </Button>
+                ))}
+              </div>
+
+              <div className="p-4 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-lg">
+                <h4 className="font-semibold mb-2">Recommended Practice</h4>
+                <p className="text-sm text-muted-foreground">
+                  {currentMood === 'peaceful' && "Continue with gratitude meditation and gentle breathing exercises."}
+                  {currentMood === 'grateful' && "Practice loving-kindness meditation and share your blessings with others."}
+                  {currentMood === 'contemplative' && "Engage in deep study of sacred texts and philosophical reflection."}
+                  {currentMood === 'joyful' && "Express your joy through devotional singing and community service."}
+                  {currentMood === 'seeking' && "Explore new spiritual practices and seek guidance from wise teachers."}
+                  {currentMood === 'compassionate' && "Focus on service to others and healing practices."}
+                </p>
+              </div>
+
+              <Button className="w-full">
+                <Target className="h-4 w-4 mr-2" />
+                Get Personalized Guidance
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Path Selection Modal */}
@@ -1082,6 +2056,7 @@ export default function Home() {
                           <Badge variant="secondary" className="text-xs">
                             {guide.religion}
                           </Badge>
+                          <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
                         </div>
                         <h3 className="text-lg font-semibold mb-2 group-hover:text-primary transition-colors">
                           {guide.title}
@@ -1163,7 +2138,7 @@ export default function Home() {
                       className="ml-2 hover:bg-primary/10"
                       aria-label="Pronounce Sanskrit Word"
                     >
-                      🔊
+                      <Volume2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
@@ -1187,13 +2162,43 @@ export default function Home() {
       <Button
         variant="outline"
         size="icon"
-        className={`fixed bottom-8 right-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-background/80 backdrop-blur-sm border-2 hover:border-primary/50 hover:scale-110 ${
+        className={`fixed bottom-8 right-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-background/80 backdrop-blur-sm border-2 hover:border-primary/50 hover:scale-110 z-40 ${
           showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
         }`}
         onClick={scrollToTop}
       >
         <ChevronUp className="h-5 w-5" />
       </Button>
+
+      {/* Floating Action Menu */}
+      <div className="fixed bottom-8 left-8 z-40">
+        <div className="flex flex-col space-y-2">
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-background/80 backdrop-blur-sm border-2 hover:border-primary/50 hover:scale-110"
+            onClick={() => setShowSacredGeometry(true)}
+          >
+            <Compass className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-background/80 backdrop-blur-sm border-2 hover:border-secondary/50 hover:scale-110"
+            onClick={() => setShowChakraAlignment(true)}
+          >
+            <Zap className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="rounded-full shadow-lg hover:shadow-xl transition-all duration-300 bg-background/80 backdrop-blur-sm border-2 hover:border-amber-500/50 hover:scale-110"
+            onClick={() => setShowMoodTracker(true)}
+          >
+            <Heart className="h-5 w-5" />
+          </Button>
+        </div>
+      </div>
     </main>
   );
 }

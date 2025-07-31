@@ -296,11 +296,30 @@
 
 /* Enhanced Typography */
 .prose-enhanced {
-  @apply prose prose-lg dark:prose-invert max-w-none;
+  @apply max-w-none text-base leading-relaxed;
 }
 
-.prose-enhanced h1, .prose-enhanced h2, .prose-enhanced h3 {
-  @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+.prose-enhanced h1,
+.prose-enhanced h2,
+.prose-enhanced h3 {
+  @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent font-bold;
+}
+
+.prose-enhanced p {
+  @apply text-muted-foreground mb-4;
+}
+
+.prose-enhanced ul,
+.prose-enhanced ol {
+  @apply text-muted-foreground;
+}
+
+.prose-enhanced blockquote {
+  @apply border-l-4 border-primary pl-4 italic text-muted-foreground;
+}
+
+.prose-enhanced code {
+  @apply bg-muted px-2 py-1 rounded text-sm font-mono;
 }
 
 /* Enhanced Button Styles */
@@ -324,6 +343,18 @@
 }
 
 /* Enhanced Animation Classes */
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
 .animate-fade-in {
   animation: fadeIn 0.5s ease-in-out;
 }
@@ -334,6 +365,11 @@
 
 .animate-scale-in {
   animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.05); opacity: 1; }
 }
 
 @keyframes fadeIn {
@@ -361,4 +397,109 @@
     opacity: 1; 
     transform: scale(1); 
   }
+}
+
+/* Spiritual Visual Effects */
+.chakra-glow {
+  box-shadow: 0 0 20px currentColor;
+  animation: chakra-pulse 2s ease-in-out infinite;
+}
+
+@keyframes chakra-pulse {
+  0%, 100% { box-shadow: 0 0 20px currentColor; }
+  50% { box-shadow: 0 0 40px currentColor, 0 0 60px currentColor; }
+}
+
+.sacred-pattern {
+  background-image: radial-gradient(circle at 50% 50%, rgba(var(--primary), 0.1) 0%, transparent 50%);
+}
+
+.meditation-focus {
+  background: radial-gradient(circle, rgba(var(--primary), 0.1) 0%, transparent 70%);
+  animation: meditation-pulse 8s ease-in-out infinite;
+}
+
+@keyframes meditation-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
+}
+
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 768px) {
+  .nav-container {
+    @apply px-2;
+  }
+  
+  .content-grid {
+    @apply gap-3;
+  }
+  
+  .modal-content {
+    @apply w-[98vw] max-h-[95vh] p-3;
+  }
+  
+  .card-hover {
+    @apply hover:scale-100;
+  }
+}
+
+/* iOS Specific Optimizations */
+@supports (-webkit-touch-callout: none) {
+  .modal-content {
+    @apply max-h-[90vh];
+  }
+  
+  .scroll-area {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Enhanced Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .animate-breathe,
+  .animate-float-slow,
+  .animate-pulse-glow,
+  .chakra-glow,
+  .meditation-focus {
+    animation: none !important;
+  }
+}
+
+/* High Contrast Mode Enhancements */
+@media (prefers-contrast: high) {
+  .card-hover {
+    @apply border-2 border-foreground;
+  }
+  
+  .sacred-quote {
+    @apply border-l-8 border-foreground;
+  }
+}
+
+/* Dark Mode Specific Enhancements */
+.dark .sacred-pattern {
+  background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+}
+
+.dark .meditation-focus {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+}
+
+/* Loading States */
+.skeleton-loader {
+  @apply bg-gradient-to-r from-muted via-muted/50 to-muted bg-[length:200%_100%] animate-[shimmer_2s_infinite];
+}
+
+/* Interactive Elements */
+.interactive-hover {
+  @apply transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer;
+}
+
+.spiritual-glow {
+  @apply shadow-lg hover:shadow-xl transition-shadow duration-300;
+  box-shadow: 0 4px 20px rgba(var(--primary), 0.2);
+}
+
+.spiritual-glow:hover {
+  box-shadow: 0 8px 40px rgba(var(--primary), 0.3);
 }
