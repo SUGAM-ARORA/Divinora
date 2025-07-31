@@ -4,7 +4,7 @@ import { HfInference } from '@huggingface/inference';
 
 const HF_TOKEN = process.env.HUGGINGFACE_TOKEN;
 const hf = new HfInference(HF_TOKEN!, {
-  requestTimeout: 15000 // 15 seconds timeout
+  requestTimeout: 8000 // 8 seconds timeout to work within serverless limits
 });
 
 export async function POST(request: Request) {
