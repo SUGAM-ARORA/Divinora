@@ -3,7 +3,9 @@ import { NextResponse } from 'next/server';
 import { HfInference } from '@huggingface/inference';
 
 const HF_TOKEN = process.env.HUGGINGFACE_TOKEN;
-const hf = new HfInference(HF_TOKEN!); // Use non-null assertion since we're not using fallback
+const hf = new HfInference(HF_TOKEN!, {
+  requestTimeout: 15000 // 15 seconds timeout
+});
 
 export async function POST(request: Request) {
   try {

@@ -3,115 +3,147 @@
 @tailwind utilities;
 
 :root {
-  /* Calming turquoise theme - light mode */
-  --background: 175 30% 98%;
-  --foreground: 180 40% 20%;
+  /* Enhanced Universal Spiritual Theme - Light Mode */
+  --background: 180 20% 99%;
+  --foreground: 180 40% 15%;
   
-  --card: 175 30% 99%;
-  --card-foreground: 180 40% 20%;
+  --card: 180 20% 98%;
+  --card-foreground: 180 40% 15%;
   
-  --popover: 175 30% 99%;
-  --popover-foreground: 180 40% 20%;
+  --popover: 180 20% 98%;
+  --popover-foreground: 180 40% 15%;
   
-  --primary: 175 60% 35%;
-  --primary-foreground: 175 30% 98%;
+  --primary: 175 70% 45%;
+  --primary-foreground: 180 20% 98%;
   
-  --secondary: 180 30% 95%;
-  --secondary-foreground: 180 40% 30%;
+  --secondary: 180 30% 94%;
+  --secondary-foreground: 180 40% 25%;
   
-  --muted: 180 20% 94%;
-  --muted-foreground: 180 30% 40%;
+  --muted: 180 20% 92%;
+  --muted-foreground: 180 30% 45%;
   
-  --accent: 175 40% 90%;
-  --accent-foreground: 180 40% 20%;
+  --accent: 175 50% 88%;
+  --accent-foreground: 180 40% 15%;
   
   --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 175 30% 98%;
+  --destructive-foreground: 180 20% 98%;
   
-  --border: 175 30% 90%;
-  --input: 175 30% 90%;
-  --ring: 175 60% 35%;
+  --border: 175 30% 88%;
+  --input: 175 30% 88%;
+  --ring: 175 70% 45%;
   
   --radius: 0.75rem;
+  
+  /* Custom spiritual gradients */
+  --gradient-divine: linear-gradient(135deg, hsl(175, 70%, 45%) 0%, hsl(200, 60%, 50%) 50%, hsl(225, 70%, 55%) 100%);
+  --gradient-sacred: linear-gradient(135deg, hsl(45, 80%, 60%) 0%, hsl(30, 75%, 55%) 50%, hsl(15, 70%, 50%) 100%);
+  --gradient-peaceful: linear-gradient(135deg, hsl(120, 40%, 60%) 0%, hsl(140, 45%, 55%) 50%, hsl(160, 50%, 50%) 100%);
 }
 
 .dark {
-  /* Calming turquoise theme - dark mode */
-  --background: 180 30% 10%;
-  --foreground: 175 30% 98%;
+  /* Enhanced Universal Spiritual Theme - Dark Mode */
+  --background: 180 25% 8%;
+  --foreground: 175 20% 95%;
   
-  --card: 180 30% 15%;
-  --card-foreground: 175 30% 98%;
+  --card: 180 25% 12%;
+  --card-foreground: 175 20% 95%;
   
-  --popover: 180 30% 15%;
-  --popover-foreground: 175 30% 98%;
+  --popover: 180 25% 12%;
+  --popover-foreground: 175 20% 95%;
   
-  --primary: 175 60% 50%;
-  --primary-foreground: 180 40% 10%;
+  --primary: 175 65% 55%;
+  --primary-foreground: 180 25% 8%;
   
-  --secondary: 180 30% 20%;
-  --secondary-foreground: 175 30% 98%;
+  --secondary: 180 25% 18%;
+  --secondary-foreground: 175 20% 95%;
   
-  --muted: 180 30% 20%;
-  --muted-foreground: 175 20% 80%;
+  --muted: 180 25% 18%;
+  --muted-foreground: 175 15% 75%;
   
-  --accent: 180 30% 25%;
-  --accent-foreground: 175 30% 98%;
+  --accent: 180 25% 22%;
+  --accent-foreground: 175 20% 95%;
   
   --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 175 30% 98%;
+  --destructive-foreground: 175 20% 95%;
   
-  --border: 180 30% 25%;
-  --input: 180 30% 25%;
-  --ring: 175 60% 50%;
+  --border: 180 25% 22%;
+  --input: 180 25% 22%;
+  --ring: 175 65% 55%;
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  html {
+    scroll-behavior: smooth;
   }
 }
 
+/* Enhanced Modal Styles */
 .modal-overlay {
-  @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+  @apply fixed inset-0 bg-black/60 backdrop-blur-md z-50;
 }
 
 .modal-content {
   @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-         w-11/12 max-w-3xl max-h-[90vh] overflow-y-auto
-         bg-card rounded-lg shadow-xl z-50
-         p-6 space-y-4;
+         w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto
+         bg-card rounded-xl shadow-2xl z-50
+         p-6 space-y-6 border-2 border-border/50;
 }
 
+/* Enhanced Card Animations */
 .card-expanded {
-  @apply transform transition-all duration-300 ease-in-out hover:scale-[1.02];
+  @apply transform transition-all duration-500 ease-out hover:scale-[1.03] hover:shadow-2xl;
 }
 
+.card-hover {
+  @apply transition-all duration-300 ease-out hover:shadow-lg hover:scale-[1.02] 
+         hover:border-primary/30 cursor-pointer;
+}
+
+/* Enhanced Image Gallery */
 .image-gallery {
-  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-4;
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 my-6;
 }
 
 .image-gallery img {
-  @apply rounded-lg object-cover w-full h-48 hover:opacity-90 transition-all duration-300
-         hover:shadow-lg hover:scale-[1.02];
+  @apply rounded-xl object-cover w-full h-56 hover:opacity-90 transition-all duration-500
+         hover:shadow-xl hover:scale-[1.05] border border-border/20;
 }
 
+/* Enhanced Sacred Quote Styling */
 .sacred-quote {
-  @apply italic text-lg text-muted-foreground border-l-4 border-primary pl-4 my-4
-         hover:border-l-8 transition-all duration-300;
+  @apply relative italic text-lg text-muted-foreground border-l-4 border-primary pl-6 my-6
+         hover:border-l-8 transition-all duration-300 bg-gradient-to-r from-primary/5 to-transparent
+         rounded-r-lg py-4 hover:from-primary/10;
 }
 
+.sacred-quote::before {
+  content: '"';
+  @apply absolute -top-2 -left-2 text-4xl text-primary/30 font-serif;
+}
+
+.sacred-quote::after {
+  content: '"';
+  @apply absolute -bottom-6 right-4 text-4xl text-primary/30 font-serif;
+}
+
+/* Enhanced Timeline Styling */
 .timeline-item {
-  @apply relative pl-8 pb-8 border-l-2 border-primary last:border-0
-         hover:border-l-4 transition-all duration-300;
+  @apply relative pl-10 pb-10 border-l-2 border-primary/30 last:border-0
+         hover:border-l-4 hover:border-primary transition-all duration-300;
 }
 
 .timeline-dot {
-  @apply absolute -left-[9px] w-4 h-4 rounded-full bg-primary
-         hover:scale-110 transition-transform duration-300;
+  @apply absolute -left-[9px] w-4 h-4 rounded-full bg-gradient-to-r from-primary to-secondary
+         hover:scale-125 transition-transform duration-300 shadow-lg;
 }
 
 /* Enhanced Responsive Design */
@@ -128,23 +160,26 @@
            xl:grid-cols-4;
   }
 
-  .card-hover {
-    @apply hover:shadow-lg hover:scale-[1.02] 
-           transition-all duration-300 
-           cursor-pointer;
-  }
-
   .text-balance {
     text-wrap: balance;
   }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 }
 
-/* Smooth Scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Loading Skeleton Animation */
+/* Enhanced Loading Animations */
 @keyframes shimmer {
   0% {
     background-position: -200% 0;
@@ -154,7 +189,176 @@ html {
   }
 }
 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(var(--primary), 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(var(--primary), 0.6);
+  }
+}
+
 .loading-skeleton {
   @apply bg-gradient-to-r from-transparent via-muted to-transparent
          bg-[length:200%_100%] animate-[shimmer_2s_infinite];
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+.glow-effect {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Enhanced Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Enhanced Focus Styles */
+.focus-visible:focus-visible {
+  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+}
+
+/* Enhanced Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    @apply text-black bg-white;
+  }
+  
+  .card-hover, .card-expanded {
+    @apply shadow-none border border-gray-300;
+  }
+}
+
+/* Enhanced Mobile Optimizations */
+@media (max-width: 640px) {
+  .modal-content {
+    @apply w-[95vw] max-h-[85vh] p-4;
+  }
+  
+  .nav-container {
+    @apply px-3;
+  }
+  
+  .content-grid {
+    @apply gap-4;
+  }
+}
+
+/* Enhanced High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --border: 0 0% 20%;
+    --primary: 210 100% 50%;
+  }
+  
+  .dark {
+    --border: 0 0% 80%;
+    --primary: 210 100% 70%;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-muted/30;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary/50 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/70;
+}
+
+/* Enhanced Typography */
+.prose-enhanced {
+  @apply prose prose-lg dark:prose-invert max-w-none;
+}
+
+.prose-enhanced h1, .prose-enhanced h2, .prose-enhanced h3 {
+  @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+}
+
+/* Enhanced Button Styles */
+.btn-divine {
+  @apply bg-gradient-to-r from-primary to-secondary text-primary-foreground
+         hover:from-primary/90 hover:to-secondary/90 transition-all duration-300
+         shadow-lg hover:shadow-xl transform hover:scale-105;
+}
+
+.btn-sacred {
+  @apply bg-gradient-to-r from-amber-500 to-orange-500 text-white
+         hover:from-amber-600 hover:to-orange-600 transition-all duration-300
+         shadow-lg hover:shadow-xl transform hover:scale-105;
+}
+
+/* Enhanced Badge Styles */
+.badge-religion {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
+         bg-gradient-to-r from-primary/10 to-secondary/10 text-primary
+         border border-primary/20 hover:border-primary/40 transition-colors;
+}
+
+/* Enhanced Animation Classes */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0; 
+    transform: scale(0.9); 
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1); 
+  }
 }
