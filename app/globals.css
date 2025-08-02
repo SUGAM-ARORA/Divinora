@@ -3,72 +3,74 @@
 @tailwind utilities;
 
 :root {
-  /* Enhanced Universal Spiritual Theme - Light Mode */
-  --background: 180 20% 99%;
-  --foreground: 180 40% 15%;
+  /* Revolutionary Spiritual Theme - Light Mode */
+  --background: 210 20% 98%;
+  --foreground: 210 40% 15%;
   
-  --card: 180 20% 98%;
-  --card-foreground: 180 40% 15%;
+  --card: 210 20% 97%;
+  --card-foreground: 210 40% 15%;
   
-  --popover: 180 20% 98%;
-  --popover-foreground: 180 40% 15%;
+  --popover: 210 20% 97%;
+  --popover-foreground: 210 40% 15%;
   
-  --primary: 175 70% 45%;
-  --primary-foreground: 180 20% 98%;
+  --primary: 262 83% 58%;
+  --primary-foreground: 210 20% 98%;
   
-  --secondary: 180 30% 94%;
-  --secondary-foreground: 180 40% 25%;
+  --secondary: 210 30% 94%;
+  --secondary-foreground: 210 40% 25%;
   
-  --muted: 180 20% 92%;
-  --muted-foreground: 180 30% 45%;
+  --muted: 210 20% 92%;
+  --muted-foreground: 210 30% 45%;
   
-  --accent: 175 50% 88%;
-  --accent-foreground: 180 40% 15%;
+  --accent: 262 50% 88%;
+  --accent-foreground: 210 40% 15%;
   
   --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 180 20% 98%;
+  --destructive-foreground: 210 20% 98%;
   
-  --border: 175 30% 88%;
-  --input: 175 30% 88%;
-  --ring: 175 70% 45%;
+  --border: 262 30% 88%;
+  --input: 262 30% 88%;
+  --ring: 262 83% 58%;
   
-  --radius: 0.75rem;
+  --radius: 1rem;
   
-  /* Custom spiritual gradients */
-  --gradient-divine: linear-gradient(135deg, hsl(175, 70%, 45%) 0%, hsl(200, 60%, 50%) 50%, hsl(225, 70%, 55%) 100%);
-  --gradient-sacred: linear-gradient(135deg, hsl(45, 80%, 60%) 0%, hsl(30, 75%, 55%) 50%, hsl(15, 70%, 50%) 100%);
-  --gradient-peaceful: linear-gradient(135deg, hsl(120, 40%, 60%) 0%, hsl(140, 45%, 55%) 50%, hsl(160, 50%, 50%) 100%);
+  /* Revolutionary Spiritual Gradients */
+  --gradient-divine: linear-gradient(135deg, hsl(262, 83%, 58%) 0%, hsl(316, 70%, 60%) 50%, hsl(45, 90%, 60%) 100%);
+  --gradient-sacred: linear-gradient(135deg, hsl(45, 90%, 60%) 0%, hsl(30, 85%, 55%) 50%, hsl(15, 80%, 50%) 100%);
+  --gradient-peaceful: linear-gradient(135deg, hsl(142, 70%, 60%) 0%, hsl(158, 75%, 55%) 50%, hsl(174, 80%, 50%) 100%);
+  --gradient-healing: linear-gradient(135deg, hsl(200, 80%, 60%) 0%, hsl(220, 85%, 65%) 50%, hsl(240, 90%, 70%) 100%);
+  --gradient-mystical: linear-gradient(135deg, hsl(280, 80%, 60%) 0%, hsl(300, 85%, 65%) 50%, hsl(320, 90%, 70%) 100%);
 }
 
 .dark {
-  /* Enhanced Universal Spiritual Theme - Dark Mode */
-  --background: 180 25% 8%;
-  --foreground: 175 20% 95%;
+  /* Revolutionary Spiritual Theme - Dark Mode */
+  --background: 210 25% 8%;
+  --foreground: 262 20% 95%;
   
-  --card: 180 25% 12%;
-  --card-foreground: 175 20% 95%;
+  --card: 210 25% 12%;
+  --card-foreground: 262 20% 95%;
   
-  --popover: 180 25% 12%;
-  --popover-foreground: 175 20% 95%;
+  --popover: 210 25% 12%;
+  --popover-foreground: 262 20% 95%;
   
-  --primary: 175 65% 55%;
-  --primary-foreground: 180 25% 8%;
+  --primary: 262 83% 68%;
+  --primary-foreground: 210 25% 8%;
   
-  --secondary: 180 25% 18%;
-  --secondary-foreground: 175 20% 95%;
+  --secondary: 210 25% 18%;
+  --secondary-foreground: 262 20% 95%;
   
-  --muted: 180 25% 18%;
-  --muted-foreground: 175 15% 75%;
+  --muted: 210 25% 18%;
+  --muted-foreground: 262 15% 75%;
   
-  --accent: 180 25% 22%;
-  --accent-foreground: 175 20% 95%;
+  --accent: 210 25% 22%;
+  --accent-foreground: 262 20% 95%;
   
   --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 175 20% 95%;
+  --destructive-foreground: 262 20% 95%;
   
-  --border: 180 25% 22%;
-  --input: 180 25% 22%;
-  --ring: 175 65% 55%;
+  --border: 210 25% 22%;
+  --input: 210 25% 22%;
+  --ring: 262 83% 68%;
 }
 
 @layer base {
@@ -79,6 +81,7 @@
   body {
     @apply bg-background text-foreground font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+    font-optical-sizing: auto;
   }
   
   html {
@@ -86,74 +89,191 @@
   }
 }
 
-/* Enhanced Modal Styles */
+/* Revolutionary Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(5deg);
+  }
+}
+
+@keyframes gradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.4);
+  }
+}
+
+@keyframes breathe {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.8; 
+  }
+  50% { 
+    transform: scale(1.05); 
+    opacity: 1; 
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+@keyframes aurora {
+  0%, 100% {
+    transform: translateX(-50%) translateY(-50%) rotate(0deg);
+  }
+  33% {
+    transform: translateX(-50%) translateY(-50%) rotate(120deg);
+  }
+  66% {
+    transform: translateX(-50%) translateY(-50%) rotate(240deg);
+  }
+}
+
+/* Revolutionary Animation Classes */
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 8s ease-in-out infinite;
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient 4s ease infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-ripple {
+  animation: ripple 0.6s linear;
+}
+
+.animate-aurora {
+  animation: aurora 20s linear infinite;
+}
+
+/* Revolutionary Modal Styles */
 .modal-overlay {
-  @apply fixed inset-0 bg-black/60 backdrop-blur-md z-50;
+  @apply fixed inset-0 bg-black/60 backdrop-blur-xl z-50;
 }
 
 .modal-content {
   @apply fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
-         w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto
-         bg-card rounded-xl shadow-2xl z-50
-         p-6 space-y-6 border-2 border-border/50;
+         w-11/12 max-w-5xl max-h-[90vh] overflow-y-auto
+         bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-3xl shadow-2xl z-50
+         p-8 space-y-8 border-2 border-white/20 dark:border-slate-700/20;
 }
 
-/* Enhanced Card Animations */
+/* Revolutionary Card Animations */
 .card-expanded {
-  @apply transform transition-all duration-500 ease-out hover:scale-[1.03] hover:shadow-2xl;
+  @apply transform transition-all duration-700 ease-out hover:scale-[1.05] hover:shadow-2xl;
 }
 
 .card-hover {
-  @apply transition-all duration-300 ease-out hover:shadow-lg hover:scale-[1.02] 
-         hover:border-primary/30 cursor-pointer;
+  @apply transition-all duration-500 ease-out hover:shadow-xl hover:scale-[1.03] 
+         hover:border-primary/40 cursor-pointer backdrop-blur-xl;
 }
 
-/* Enhanced Image Gallery */
+/* Revolutionary Image Gallery */
 .image-gallery {
-  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 my-6;
+  @apply grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 my-8;
 }
 
 .image-gallery img {
-  @apply rounded-xl object-cover w-full h-56 hover:opacity-90 transition-all duration-500
-         hover:shadow-xl hover:scale-[1.05] border border-border/20;
+  @apply rounded-2xl object-cover w-full h-64 hover:opacity-90 transition-all duration-700
+         hover:shadow-2xl hover:scale-[1.08] border-2 border-white/20 dark:border-slate-700/20;
 }
 
-/* Enhanced Sacred Quote Styling */
+/* Revolutionary Sacred Quote Styling */
 .sacred-quote {
-  @apply relative italic text-lg text-muted-foreground border-l-4 border-primary pl-6 my-6
-         hover:border-l-8 transition-all duration-300 bg-gradient-to-r from-primary/5 to-transparent
-         rounded-r-lg py-4 hover:from-primary/10;
+  @apply relative italic text-lg text-muted-foreground border-l-4 border-primary pl-8 my-8
+         hover:border-l-8 transition-all duration-500 bg-gradient-to-r from-primary/5 via-secondary/5 to-accent/5
+         rounded-r-2xl py-6 hover:from-primary/10 hover:via-secondary/10 hover:to-accent/10
+         backdrop-blur-sm;
 }
 
 .sacred-quote::before {
   content: '"';
-  @apply absolute -top-2 -left-2 text-4xl text-primary/30 font-serif;
+  @apply absolute -top-4 -left-4 text-6xl text-primary/30 font-serif;
 }
 
 .sacred-quote::after {
   content: '"';
-  @apply absolute -bottom-6 right-4 text-4xl text-primary/30 font-serif;
+  @apply absolute -bottom-8 right-6 text-6xl text-primary/30 font-serif;
 }
 
-/* Enhanced Timeline Styling */
+/* Revolutionary Timeline Styling */
 .timeline-item {
-  @apply relative pl-10 pb-10 border-l-2 border-primary/30 last:border-0
-         hover:border-l-4 hover:border-primary transition-all duration-300;
+  @apply relative pl-12 pb-12 border-l-4 border-primary/30 last:border-0
+         hover:border-l-8 hover:border-primary transition-all duration-500;
 }
 
 .timeline-dot {
-  @apply absolute -left-[9px] w-4 h-4 rounded-full bg-gradient-to-r from-primary to-secondary
-         hover:scale-125 transition-transform duration-300 shadow-lg;
+  @apply absolute -left-[13px] w-6 h-6 rounded-full bg-gradient-to-r from-primary to-secondary
+         hover:scale-150 transition-transform duration-500 shadow-xl animate-pulse-glow;
 }
 
-/* Enhanced Responsive Design */
+/* Revolutionary Responsive Design */
 @layer utilities {
   .nav-container {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-300;
+    @apply max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 transition-all duration-500;
   }
 
   .content-grid {
-    @apply grid gap-6 transition-all duration-300
+    @apply grid gap-8 transition-all duration-500
            grid-cols-1 
            sm:grid-cols-2 
            lg:grid-cols-3 
@@ -179,48 +299,17 @@
   }
 }
 
-/* Enhanced Loading Animations */
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(var(--primary), 0.3);
-  }
-  50% {
-    box-shadow: 0 0 40px rgba(var(--primary), 0.6);
-  }
-}
-
+/* Revolutionary Loading Animations */
 .loading-skeleton {
   @apply bg-gradient-to-r from-transparent via-muted to-transparent
-         bg-[length:200%_100%] animate-[shimmer_2s_infinite];
-}
-
-.float-animation {
-  animation: float 3s ease-in-out infinite;
+         bg-[length:200%_100%] animate-shimmer;
 }
 
 .glow-effect {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* Enhanced Accessibility */
+/* Revolutionary Accessibility */
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -229,12 +318,12 @@
   }
 }
 
-/* Enhanced Focus Styles */
+/* Revolutionary Focus Styles */
 .focus-visible:focus-visible {
-  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  @apply outline-none ring-4 ring-primary/50 ring-offset-4 ring-offset-background;
 }
 
-/* Enhanced Print Styles */
+/* Revolutionary Print Styles */
 @media print {
   .no-print {
     display: none !important;
@@ -249,52 +338,52 @@
   }
 }
 
-/* Enhanced Mobile Optimizations */
+/* Revolutionary Mobile Optimizations */
 @media (max-width: 640px) {
   .modal-content {
-    @apply w-[95vw] max-h-[85vh] p-4;
+    @apply w-[95vw] max-h-[85vh] p-6;
   }
   
   .nav-container {
-    @apply px-3;
+    @apply px-4;
   }
   
   .content-grid {
-    @apply gap-4;
+    @apply gap-6;
   }
 }
 
-/* Enhanced High Contrast Mode */
+/* Revolutionary High Contrast Mode */
 @media (prefers-contrast: high) {
   :root {
     --border: 0 0% 20%;
-    --primary: 210 100% 50%;
+    --primary: 262 100% 60%;
   }
   
   .dark {
     --border: 0 0% 80%;
-    --primary: 210 100% 70%;
+    --primary: 262 100% 80%;
   }
 }
 
-/* Custom Scrollbar */
+/* Revolutionary Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-muted/30;
+  @apply bg-muted/30 rounded-full;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary/50 rounded-full;
+  @apply bg-gradient-to-b from-primary to-secondary rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-primary/70;
+  @apply from-primary/80 to-secondary/80;
 }
 
-/* Enhanced Typography */
+/* Revolutionary Typography */
 .prose-enhanced {
   @apply max-w-none text-base leading-relaxed;
 }
@@ -302,11 +391,11 @@
 .prose-enhanced h1,
 .prose-enhanced h2,
 .prose-enhanced h3 {
-  @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent font-bold;
+  @apply bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent font-bold;
 }
 
 .prose-enhanced p {
-  @apply text-muted-foreground mb-4;
+  @apply text-muted-foreground mb-6;
 }
 
 .prose-enhanced ul,
@@ -315,127 +404,148 @@
 }
 
 .prose-enhanced blockquote {
-  @apply border-l-4 border-primary pl-4 italic text-muted-foreground;
+  @apply border-l-4 border-primary pl-6 italic text-muted-foreground bg-primary/5 py-4 rounded-r-lg;
 }
 
 .prose-enhanced code {
-  @apply bg-muted px-2 py-1 rounded text-sm font-mono;
+  @apply bg-muted px-3 py-1 rounded-lg text-sm font-mono;
 }
 
-/* Enhanced Button Styles */
+/* Revolutionary Button Styles */
 .btn-divine {
-  @apply bg-gradient-to-r from-primary to-secondary text-primary-foreground
-         hover:from-primary/90 hover:to-secondary/90 transition-all duration-300
-         shadow-lg hover:shadow-xl transform hover:scale-105;
+  @apply bg-gradient-to-r from-primary via-secondary to-accent text-primary-foreground
+         hover:from-primary/90 hover:via-secondary/90 hover:to-accent/90 transition-all duration-500
+         shadow-xl hover:shadow-2xl transform hover:scale-110 rounded-2xl;
 }
 
 .btn-sacred {
-  @apply bg-gradient-to-r from-amber-500 to-orange-500 text-white
-         hover:from-amber-600 hover:to-orange-600 transition-all duration-300
-         shadow-lg hover:shadow-xl transform hover:scale-105;
+  @apply bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white
+         hover:from-amber-600 hover:via-orange-600 hover:to-red-600 transition-all duration-500
+         shadow-xl hover:shadow-2xl transform hover:scale-110 rounded-2xl;
 }
 
-/* Enhanced Badge Styles */
+.btn-healing {
+  @apply bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 text-white
+         hover:from-green-600 hover:via-teal-600 hover:to-blue-600 transition-all duration-500
+         shadow-xl hover:shadow-2xl transform hover:scale-110 rounded-2xl;
+}
+
+/* Revolutionary Badge Styles */
 .badge-religion {
-  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
-         bg-gradient-to-r from-primary/10 to-secondary/10 text-primary
-         border border-primary/20 hover:border-primary/40 transition-colors;
+  @apply inline-flex items-center px-4 py-2 rounded-full text-sm font-medium
+         bg-gradient-to-r from-primary/10 via-secondary/10 to-accent/10 text-primary
+         border-2 border-primary/20 hover:border-primary/50 transition-all duration-300
+         backdrop-blur-sm;
 }
 
-/* Enhanced Animation Classes */
-.animate-breathe {
-  animation: breathe 4s ease-in-out infinite;
-}
-
-.animate-float-slow {
-  animation: float 6s ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.animate-slide-up {
-  animation: slideUp 0.5s ease-out;
-}
-
-.animate-scale-in {
-  animation: scaleIn 0.3s ease-out;
-}
-
-@keyframes breathe {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.05); opacity: 1; }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { 
-    opacity: 0; 
-    transform: translateY(20px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
-}
-
-@keyframes scaleIn {
-  from { 
-    opacity: 0; 
-    transform: scale(0.9); 
-  }
-  to { 
-    opacity: 1; 
-    transform: scale(1); 
-  }
-}
-
-/* Spiritual Visual Effects */
+/* Revolutionary Spiritual Visual Effects */
 .chakra-glow {
-  box-shadow: 0 0 20px currentColor;
-  animation: chakra-pulse 2s ease-in-out infinite;
+  box-shadow: 0 0 30px currentColor;
+  animation: chakra-pulse 3s ease-in-out infinite;
 }
 
 @keyframes chakra-pulse {
-  0%, 100% { box-shadow: 0 0 20px currentColor; }
-  50% { box-shadow: 0 0 40px currentColor, 0 0 60px currentColor; }
+  0%, 100% { 
+    box-shadow: 0 0 30px currentColor; 
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 60px currentColor, 0 0 90px currentColor; 
+    transform: scale(1.05);
+  }
 }
 
 .sacred-pattern {
-  background-image: radial-gradient(circle at 50% 50%, rgba(var(--primary), 0.1) 0%, transparent 50%);
+  background-image: radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
 }
 
 .meditation-focus {
-  background: radial-gradient(circle, rgba(var(--primary), 0.1) 0%, transparent 70%);
-  animation: meditation-pulse 8s ease-in-out infinite;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+  animation: meditation-pulse 10s ease-in-out infinite;
 }
 
 @keyframes meditation-pulse {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.1); }
+  0%, 100% { 
+    opacity: 0.3; 
+    transform: scale(1); 
+  }
+  50% { 
+    opacity: 0.8; 
+    transform: scale(1.2); 
+  }
 }
 
-/* Enhanced Mobile Responsiveness */
+/* Revolutionary Healing Energy Effects */
+.healing-aura {
+  position: relative;
+}
+
+.healing-aura::before {
+  content: '';
+  position: absolute;
+  inset: -20px;
+  background: conic-gradient(from 0deg, transparent, rgba(139, 92, 246, 0.3), transparent);
+  border-radius: inherit;
+  animation: aurora 8s linear infinite;
+  z-index: -1;
+}
+
+.divine-light {
+  background: linear-gradient(45deg, 
+    rgba(139, 92, 246, 0.1) 0%, 
+    rgba(236, 72, 153, 0.1) 25%, 
+    rgba(251, 191, 36, 0.1) 50%, 
+    rgba(34, 197, 94, 0.1) 75%, 
+    rgba(59, 130, 246, 0.1) 100%);
+  animation: divine-flow 15s ease-in-out infinite;
+}
+
+@keyframes divine-flow {
+  0%, 100% { 
+    background-position: 0% 50%; 
+  }
+  50% { 
+    background-position: 100% 50%; 
+  }
+}
+
+/* Revolutionary Interactive Elements */
+.interactive-hover {
+  @apply transition-all duration-500 hover:scale-110 hover:shadow-2xl cursor-pointer
+         hover:rotate-1 hover:brightness-110;
+}
+
+.spiritual-glow {
+  @apply shadow-xl hover:shadow-2xl transition-all duration-500;
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
+}
+
+.spiritual-glow:hover {
+  box-shadow: 0 16px 64px rgba(139, 92, 246, 0.4);
+}
+
+/* Revolutionary Glass Morphism */
+.glass-morphism {
+  @apply bg-white/10 dark:bg-slate-900/10 backdrop-blur-xl border border-white/20 dark:border-slate-700/20;
+}
+
+.glass-card {
+  @apply bg-white/60 dark:bg-slate-900/60 backdrop-blur-xl border-0 shadow-xl
+         hover:bg-white/80 dark:hover:bg-slate-900/80 transition-all duration-500;
+}
+
+/* Revolutionary Responsive Breakpoints */
 @media (max-width: 768px) {
   .nav-container {
-    @apply px-2;
+    @apply px-4;
   }
   
   .content-grid {
-    @apply gap-3;
+    @apply gap-6;
   }
   
   .modal-content {
-    @apply w-[98vw] max-h-[95vh] p-3;
+    @apply w-[98vw] max-h-[95vh] p-4;
   }
   
   .card-hover {
@@ -443,7 +553,7 @@
   }
 }
 
-/* iOS Specific Optimizations */
+/* Revolutionary iOS Specific Optimizations */
 @supports (-webkit-touch-callout: none) {
   .modal-content {
     @apply max-h-[90vh];
@@ -454,29 +564,7 @@
   }
 }
 
-/* Enhanced Accessibility */
-@media (prefers-reduced-motion: reduce) {
-  .animate-breathe,
-  .animate-float-slow,
-  .animate-pulse-glow,
-  .chakra-glow,
-  .meditation-focus {
-    animation: none !important;
-  }
-}
-
-/* High Contrast Mode Enhancements */
-@media (prefers-contrast: high) {
-  .card-hover {
-    @apply border-2 border-foreground;
-  }
-  
-  .sacred-quote {
-    @apply border-l-8 border-foreground;
-  }
-}
-
-/* Dark Mode Specific Enhancements */
+/* Revolutionary Dark Mode Enhancements */
 .dark .sacred-pattern {
   background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
 }
@@ -485,21 +573,182 @@
   background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
 }
 
-/* Loading States */
+.dark .divine-light {
+  background: linear-gradient(45deg, 
+    rgba(139, 92, 246, 0.05) 0%, 
+    rgba(236, 72, 153, 0.05) 25%, 
+    rgba(251, 191, 36, 0.05) 50%, 
+    rgba(34, 197, 94, 0.05) 75%, 
+    rgba(59, 130, 246, 0.05) 100%);
+}
+
+/* Revolutionary Loading States */
 .skeleton-loader {
-  @apply bg-gradient-to-r from-muted via-muted/50 to-muted bg-[length:200%_100%] animate-[shimmer_2s_infinite];
+  @apply bg-gradient-to-r from-muted via-muted/50 to-muted bg-[length:200%_100%] animate-shimmer;
 }
 
-/* Interactive Elements */
-.interactive-hover {
-  @apply transition-all duration-300 hover:scale-105 hover:shadow-lg cursor-pointer;
+/* Revolutionary Spiritual Symbols */
+.om-symbol::before {
+  content: "ॐ";
+  @apply text-4xl text-primary/30 absolute -top-2 -left-2;
 }
 
-.spiritual-glow {
-  @apply shadow-lg hover:shadow-xl transition-shadow duration-300;
-  box-shadow: 0 4px 20px rgba(var(--primary), 0.2);
+.cross-symbol::before {
+  content: "✝";
+  @apply text-4xl text-primary/30 absolute -top-2 -left-2;
 }
 
-.spiritual-glow:hover {
-  box-shadow: 0 8px 40px rgba(var(--primary), 0.3);
+.crescent-symbol::before {
+  content: "☪";
+  @apply text-4xl text-primary/30 absolute -top-2 -left-2;
+}
+
+.dharma-wheel::before {
+  content: "☸";
+  @apply text-4xl text-primary/30 absolute -top-2 -left-2;
+}
+
+.star-of-david::before {
+  content: "✡";
+  @apply text-4xl text-primary/30 absolute -top-2 -left-2;
+}
+
+/* Revolutionary Meditation Timer */
+.meditation-timer {
+  @apply relative w-32 h-32 rounded-full border-4 border-primary/20 flex items-center justify-center
+         bg-gradient-to-br from-primary/10 to-secondary/10 backdrop-blur-sm;
+}
+
+.meditation-timer::before {
+  content: '';
+  @apply absolute inset-0 rounded-full border-4 border-transparent border-t-primary
+         animate-spin;
+}
+
+/* Revolutionary Breathing Animation */
+.breathing-circle {
+  @apply w-24 h-24 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20
+         animate-breathe;
+}
+
+/* Revolutionary Sacred Geometry */
+.sacred-geometry {
+  background-image: 
+    radial-gradient(circle at 25% 25%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 75% 25%, rgba(251, 191, 36, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 25% 75%, rgba(34, 197, 94, 0.1) 0%, transparent 50%);
+}
+
+/* Revolutionary Mandala Pattern */
+.mandala-bg {
+  background-image: 
+    conic-gradient(from 0deg at 50% 50%, 
+      transparent 0deg, 
+      rgba(139, 92, 246, 0.1) 60deg, 
+      transparent 120deg, 
+      rgba(236, 72, 153, 0.1) 180deg, 
+      transparent 240deg, 
+      rgba(251, 191, 36, 0.1) 300deg, 
+      transparent 360deg);
+  animation: aurora 30s linear infinite;
+}
+
+/* Revolutionary Particle Effects */
+.particle-field {
+  position: relative;
+  overflow: hidden;
+}
+
+.particle-field::before,
+.particle-field::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(139, 92, 246, 0.6);
+  border-radius: 50%;
+  animation: float 8s ease-in-out infinite;
+}
+
+.particle-field::before {
+  top: 20%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.particle-field::after {
+  top: 80%;
+  right: 20%;
+  animation-delay: 4s;
+}
+
+/* Revolutionary Energy Flow */
+.energy-flow {
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(139, 92, 246, 0.3) 50%, 
+    transparent 100%);
+  background-size: 200% 100%;
+  animation: energy-pulse 3s ease-in-out infinite;
+}
+
+@keyframes energy-pulse {
+  0%, 100% {
+    background-position: -200% 0;
+  }
+  50% {
+    background-position: 200% 0;
+  }
+}
+
+/* Revolutionary Spiritual Transitions */
+.spiritual-transition {
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.divine-entrance {
+  animation: divine-entrance 1.2s ease-out;
+}
+
+@keyframes divine-entrance {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(-10px) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Revolutionary Healing Visualization */
+.healing-wave {
+  background: linear-gradient(45deg, 
+    rgba(34, 197, 94, 0.1) 0%, 
+    rgba(59, 130, 246, 0.1) 25%, 
+    rgba(139, 92, 246, 0.1) 50%, 
+    rgba(236, 72, 153, 0.1) 75%, 
+    rgba(251, 191, 36, 0.1) 100%);
+  background-size: 400% 400%;
+  animation: healing-flow 8s ease-in-out infinite;
+}
+
+@keyframes healing-flow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
 }
