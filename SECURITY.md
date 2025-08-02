@@ -47,8 +47,8 @@ We take the security of Divinora seriously. If you believe you have found a secu
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 1.x.x   | :white_check_mark: |
-| < 1.0   | :x:                |
+| 2.x.x   | :white_check_mark: |
+| <= 1.0   | :x:                |
 
 ## Best Practices
 
@@ -61,5 +61,5 @@ We take the security of Divinora seriously. If you believe you have found a secu
 ## Contact
 
 For security concerns, contact:
-- Email: security@divinora.com
+- Email: sugam.arora23@gmail.com
 - Response time: 24-48 hours

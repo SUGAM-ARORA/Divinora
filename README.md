@@ -191,12 +191,12 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) f
 <table>
 <tr>
 <td align="center"><a href="https://github.com/SUGAM-ARORA"><img src="https://github.com/SUGAM-ARORA/UniCollab/assets/96546088/09d60ee5-8215-4327-808f-4edf119370b6" width=150px height=150px /></a></br> <h4 style="color:cyan;">Sugam Arora</h4>
-<p>Lead Developer & Spiritual Technology Advocate</p>
+<p>Lead Developer</p>
  <a href="https://www.linkedin.com/in/sugamarora23/"><img src="https://img.icons8.com/fluency/2x/linkedin.png" width="32px" height="32px"></img></a>
  <a href="https://github.com/SUGAM-ARORA"><img src="https://img.icons8.com/fluency/2x/github.png" width="32px" height="32px"></img></a>
    </td>
-<td align="center"><a href="https://github.com/Ojas-Arora"><img src="https://media.licdn.com/dms/image/v2/D5603AQE_oGyp9N_-7w/profile-displayphoto-shrink_800_800/B56ZUP6MjiHEAg-/0/1739728669386?e=1745452800&v=beta&t=7qdHp6ZphCg0fA-qY6EklX5JNAy5ShAFqEXxSqfxuqw" width=150px height=150px /></a></br> <h4 style="color:cyan;">Ojas Arora</h4>
-<p>Co-Developer & Interfaith Content Curator</p>
+<td align="center"><a href="https://github.com/Ojas-Arora"><img src="https://avatars.githubusercontent.com/u/127867874?v=4" width=150px height=150px /></a></br> <h4 style="color:cyan;">Ojas Arora</h4>
+<p>Co-Developer</p>
  <a href="https://www.linkedin.com/in/ojasarora14/"><img src="https://img.icons8.com/fluency/2x/linkedin.png" width="32px" height="32px"></img></a>
  <a href="https://github.com/Ojas-Arora"><img src="https://img.icons8.com/fluency/2x/github.png" width="32px" height="32px"></img></a>
    </td>
