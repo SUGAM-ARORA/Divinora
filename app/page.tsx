@@ -62,6 +62,7 @@ import { AuthDialog } from '@/components/auth/auth-dialog';
 import { UserNav } from '@/components/user-nav';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
+import ScrollToTop from "../components/ScrollToTop";
 
 export default function Home() {
   // State Management
@@ -1055,17 +1056,7 @@ export default function Home() {
             </div>
           </Card>
         </div>
-
-        {/* Floating Action Button */}
-        <div className="fixed bottom-6 left-6 z-40">
-          <Button
-            size="icon"
-            className="w-14 h-14 rounded-full bg-gradient-to-r from-primary to-secondary shadow-2xl hover:shadow-3xl animate-pulse-glow"
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          >
-            <Sparkles className="h-6 w-6" />
-          </Button>
-        </div>
+        <ScrollToTop />
       </main>
 
       {/* Modals */}
