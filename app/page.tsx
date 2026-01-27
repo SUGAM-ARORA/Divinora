@@ -533,7 +533,7 @@ export default function Home() {
         </section>
 
         {/* Interactive Meditation Timer */}
-        <section className="py-20 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20">
+        <section className="py-20 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
@@ -544,7 +544,7 @@ export default function Home() {
               </p>
             </div>
 
-            <Card className="p-8 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-2 border-white/20 shadow-2xl">
+            <Card className="p-8 bg-slate-800/90 backdrop-blur-sm border-2 border-slate-700/30 shadow-2xl">
               <div className="text-center space-y-8">
                 {/* Breathing Animation */}
                 <div className="relative">
@@ -607,7 +607,7 @@ export default function Home() {
         </section>
 
         {/* Chakra Alignment System */}
-        <section className="py-20">
+        <section className="py-20 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent mb-4">
@@ -651,7 +651,7 @@ export default function Home() {
         </section>
 
         {/* Sacred Geometry Explorer */}
-        <section className="py-20 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20">
+        <section className="py-20 bg-gradient-to-br from-slate-900 via-amber-950 to-slate-900">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent mb-4">
@@ -744,7 +744,7 @@ export default function Home() {
         </section>
 
         {/* Virtual Pilgrimage Tours */}
-        <section className="py-20">
+        <section className="py-20 bg-gradient-to-br from-slate-950 via-teal-950 to-slate-950">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent mb-4">
@@ -795,7 +795,7 @@ export default function Home() {
         </section>
 
         {/* Spiritual Mood Tracker */}
-        <section className="py-20 bg-gradient-to-r from-pink-50 to-purple-50 dark:from-pink-950/20 dark:to-purple-950/20">
+        <section className="py-20 bg-gradient-to-br from-slate-900 via-pink-950 to-slate-900">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-4">
@@ -806,7 +806,7 @@ export default function Home() {
               </p>
             </div>
 
-            <Card className="p-8 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+            <Card className="p-8 bg-slate-800/90 backdrop-blur-sm border-2 border-slate-700/30">
               <div className="space-y-8">
                 <div>
                   <h3 className="font-semibold text-lg mb-4 text-center">How are you feeling spiritually today?</h3>
@@ -847,7 +847,7 @@ export default function Home() {
         </section>
 
         {/* Explore Section */}
-        <section id="explore" className="py-20">
+        <section id="explore" className="py-20 bg-gradient-to-br from-slate-950 via-blue-950 to-slate-950">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-12">
               <h2 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-4">
@@ -896,11 +896,11 @@ export default function Home() {
                 {deities.slice(0, 8).map((deity) => (
                   <Card 
                     key={deity.id} 
-                    className="group cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-105 bg-gradient-to-br from-card to-card/50 border-2 hover:border-primary/50"
+                    className="group cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-105 bg-gradient-to-br from-slate-800/90 to-slate-900/90 border-2 border-slate-700/30 hover:border-primary/50"
                     onClick={() => handleDeityClick(deity)}
                   >
-                    <div className="relative h-48 bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center overflow-hidden">
-                      <div className="text-6xl opacity-20 group-hover:opacity-30 transition-opacity">
+                    <div className="relative h-48 bg-gradient-to-br from-primary/10 to-secondary/10 flex items-center justify-center overflow-hidden border-b border-slate-700/30">
+                      <div className="text-6xl opacity-30 group-hover:opacity-40 transition-opacity">
                         {deity.religion === 'Hinduism' ? '🕉️' : 
                          deity.religion === 'Christianity' ? '✝️' : 
                          deity.religion === 'Islam' ? '☪️' : 
@@ -909,26 +909,26 @@ export default function Home() {
                          deity.religion === 'Sikhism' ? '☬' : '🙏'}
                       </div>
                       <div className="absolute top-4 right-4">
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className="text-xs bg-slate-700/50 text-slate-200">
                           {deity.religion}
                         </Badge>
                       </div>
                     </div>
                     <CardContent className="p-6">
-                      <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                      <h3 className="font-semibold text-lg mb-2 text-slate-100 group-hover:text-primary transition-colors">
                         {deity.name}
                       </h3>
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+                      <p className="text-sm text-slate-300 mb-4 line-clamp-3">
                         {deity.description}
                       </p>
                       <div className="flex flex-wrap gap-1 mb-4">
                         {deity.attributes.slice(0, 3).map((attr: string, index: number) => (
-                          <Badge key={index} variant="outline" className="text-xs">
+                          <Badge key={index} variant="outline" className="text-xs border-slate-600 text-slate-300">
                             {attr}
                           </Badge>
                         ))}
                       </div>
-                      <Button variant="ghost" className="w-full group-hover:bg-primary/10">
+                      <Button variant="ghost" className="w-full group-hover:bg-primary/10 text-slate-200">
                         Learn More
                       </Button>
                     </CardContent>
@@ -944,25 +944,25 @@ export default function Home() {
                 {sacredStories.slice(0, 6).map((story) => (
                   <Card 
                     key={story.id} 
-                    className="group cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                    className="group cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-105 bg-gradient-to-br from-slate-800/90 to-slate-900/90 border-2 border-slate-700/30 hover:border-amber-500/50"
                     onClick={() => handleStoryClick(story)}
                   >
-                    <div className="relative h-40 bg-gradient-to-br from-amber-400/20 to-orange-400/20 flex items-center justify-center">
-                      <BookOpen className="h-12 w-12 text-amber-600/60" />
+                    <div className="relative h-40 bg-gradient-to-br from-amber-900/20 to-orange-900/20 flex items-center justify-center border-b border-slate-700/30">
+                      <BookOpen className="h-12 w-12 text-amber-400/60" />
                       <div className="absolute top-4 right-4">
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className="text-xs bg-slate-700/50 text-slate-200">
                           {story.religion}
                         </Badge>
                       </div>
                     </div>
                     <CardContent className="p-6">
-                      <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                      <h3 className="font-semibold text-lg mb-2 text-slate-100 group-hover:text-amber-400 transition-colors">
                         {story.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+                      <p className="text-sm text-slate-300 mb-4 line-clamp-3">
                         {story.description}
                       </p>
-                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                      <div className="flex items-center justify-between text-xs text-slate-400">
                         <span>{story.tradition}</span>
                         <span>{story.era}</span>
                       </div>
@@ -979,27 +979,27 @@ export default function Home() {
                 {teachings.slice(0, 4).map((teaching) => (
                   <Card 
                     key={teaching.id} 
-                    className="group cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                    className="group cursor-pointer hover:shadow-2xl transition-all duration-300 hover:scale-105 bg-gradient-to-br from-slate-800/90 to-slate-900/90 border-2 border-slate-700/30 hover:border-primary/50"
                     onClick={() => handleTeachingClick(teaching)}
                   >
                     <CardContent className="p-6">
                       <div className="flex items-center justify-between mb-4">
-                        <Lightbulb className="h-8 w-8 text-primary" />
+                        <Lightbulb className="h-8 w-8 text-purple-400" />
                         <div className="flex flex-wrap gap-1">
                           {teaching.religions.slice(0, 3).map((religion, index) => (
-                            <Badge key={index} variant="outline" className="text-xs">
+                            <Badge key={index} variant="outline" className="text-xs border-slate-600 text-slate-300">
                               {religion}
                             </Badge>
                           ))}
                         </div>
                       </div>
-                      <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
+                      <h3 className="font-semibold text-lg mb-2 text-slate-100 group-hover:text-primary transition-colors">
                         {teaching.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+                      <p className="text-sm text-slate-300 mb-4 line-clamp-3">
                         {teaching.description}
                       </p>
-                      <ul className="text-sm text-muted-foreground space-y-1">
+                      <ul className="text-sm text-slate-400 space-y-1">
                         {teaching.keyPoints.slice(0, 2).map((point, index) => (
                           <li key={index} className="flex items-start">
                             <span className="w-1 h-1 bg-primary rounded-full mt-2 mr-2 flex-shrink-0"></span>
