@@ -37,9 +37,9 @@ export default function DeitiesPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
               {hinduDeities.map((deity, idx) => (
                 <Card key={deity.id} className="overflow-hidden border-0 shadow-2xl bg-white dark:bg-slate-900 group">
-                  <div className="relative h-80 w-full overflow-hidden bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
-                    {/* Using standard img tag with object-cover for the beautiful 3D images generated */}
+                  <div className="relative aspect-square w-full overflow-hidden bg-slate-950 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent z-10" />
+                    {/* Using aspect-square and object-cover makes the 1:1 image perfectly visible without cropping */}
                     <img
                       src={deity.avatarUrl}
                       alt={deity.name}
