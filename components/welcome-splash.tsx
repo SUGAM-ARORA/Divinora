@@ -163,13 +163,18 @@ export function WelcomeSplash({ onEnter }: { onEnter: () => void }) {
         <p className="text-orange-300/80 text-sm italic my-6" style={{ fontFamily: 'serif' }}>
           "ॐ भूर्भुवः स्वः तत्सवितुर्वरेण्यं भर्गो देवस्य धीमहि धियो यो नः प्रचोदयात्"
         </p>
-        <p className="text-orange-400/60 text-xs mb-8">— Gayatri Mantra</p>
+        <p className="text-orange-400/60 text-xs mb-4">— Gayatri Mantra</p>
 
-        {/* Tricolor line */}
-        <div className="flex justify-center gap-0 mb-8">
-          <div className="h-1 w-16 bg-orange-400 rounded-l-full" />
-          <div className="h-1 w-16 bg-white" />
-          <div className="h-1 w-16 bg-green-500 rounded-r-full" />
+        {/* Indian Flag subtle element */}
+        <div className="flex flex-col items-center mb-8 opacity-80">
+          <div className="flex justify-center gap-0 mb-1">
+            <div className="h-1 w-16 bg-[#FF9933] rounded-l-full shadow-[0_0_10px_#FF9933]" />
+            <div className="h-1 w-16 bg-white shadow-[0_0_10px_#FFFFFF] relative overflow-hidden">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-0.5 h-0.5 rounded-full bg-[#000080]" />
+            </div>
+            <div className="h-1 w-16 bg-[#138808] rounded-r-full shadow-[0_0_10px_#138808]" />
+          </div>
+          <span className="text-[10px] text-white/40 tracking-[0.3em] uppercase">Sacred India</span>
         </div>
 
         {/* Enter Button */}

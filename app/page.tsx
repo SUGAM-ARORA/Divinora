@@ -2,68 +2,84 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Mountain, Map, Compass, ArrowRight, Sparkles, Star, ChevronRight,
-  MapPin, Clock, Users, BookOpen, Heart, Globe, Flame, TreePine
+  MapPin, Clock, Users, BookOpen, Heart, Globe, Flame, Play, ArrowDown
 } from 'lucide-react';
 import { Navbar } from '@/components/navbar';
-import { CircuitCard } from '@/components/pilgrimage-card';
 import { WelcomeSplash } from '@/components/welcome-splash';
+import { useAudio } from '@/components/audio-provider';
+import { SeasonalCalendar } from '@/components/seasonal-calendar';
 import { charDhamCircuit, jyotirlingaCircuit, shaktiPeethaCircuit, sacredTreks, indianStates } from '@/lib/data';
 import { supabase } from '@/lib/supabase';
-import { useToast } from '@/hooks/use-toast';
+
+// High-end component for Pilgrimage Circuit
+const PremiumCircuitCard = ({ title, description, stats, color, href, imageGradient, index }: any) => {
+  const { playSoftBell } = useAudio();
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.7, delay: index * 0.1 }}
+      onMouseEnter={playSoftBell}
+      className="group relative"
+    >
+      <Link href={href}>
+        <div className="absolute -inset-1 bg-gradient-to-r from-orange-600 via-amber-500 to-red-600 rounded-3xl blur opacity-20 group-hover:opacity-75 transition duration-1000 group-hover:duration-200" />
+        <div className="relative h-[450px] bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 flex flex-col justify-end">
+          {/* Conceptual Image Background */}
+          <div className={`absolute inset-0 bg-gradient-to-b ${imageGradient} opacity-60 group-hover:scale-110 transition-transform duration-1000`} />
+          <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-700" />
+          
+          <div className="relative p-8 z-10 translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+            <h3 className="text-3xl font-bold text-white mb-2 font-serif">{title}</h3>
+            <p className="text-slate-300 opacity-0 group-hover:opacity-100 transition-opacity duration-500 mb-6 line-clamp-3">
+              {description}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              {stats.map((stat: any, i: number) => (
+                <div key={i} className="flex items-center text-xs text-white/80 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
+                  <stat.icon className="w-3 h-3 mr-1.5 text-amber-400" />
+                  {stat.value}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+};
 
 export default function Home() {
   const [user, setUser] = useState<any>(null);
   const [showSplash, setShowSplash] = useState(false);
+  const { playBell, playSoftBell } = useAudio();
+  const { scrollYProgress } = useScroll();
+  const yHero = useTransform(scrollYProgress, [0, 1], [0, 600]);
+  const opacityHero = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   useEffect(() => {
-    // Show splash only once per session
     if (typeof window !== 'undefined' && !sessionStorage.getItem('divinora_entered')) {
       setShowSplash(true);
     }
   }, []);
-  const { toast } = useToast();
 
   useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+    supabase.auth.getSession().then(({ data: { session } }) => setUser(session?.user || null));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       setUser(session?.user || null);
-    };
-    getSession();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-      if (event === 'SIGNED_IN') {
-        toast({ title: "Welcome to Divinora! 🙏", description: "Your sacred journey begins here." });
-      }
     });
     return () => subscription.unsubscribe();
-  }, [toast]);
-
-  const featuredStates = indianStates.slice(0, 6);
-
-  const quickLinks = [
-    { name: 'Char Dham', icon: '🏔️', href: '/pilgrimages/char-dham', color: 'from-orange-500 to-amber-500', desc: '4 Sacred Himalayan Shrines' },
-    { name: '12 Jyotirlingas', icon: '🔱', href: '/pilgrimages/jyotirlingas', color: 'from-blue-600 to-indigo-600', desc: 'Self-manifested Shiva Lingams' },
-    { name: '52 Shakti Peethas', icon: '🔥', href: '/pilgrimages/shakti-peethas', color: 'from-red-500 to-pink-600', desc: 'Sacred Seats of Goddess' },
-    { name: 'Vaishno Devi', icon: '⛰️', href: '/treks/vaishno-devi', color: 'from-pink-500 to-rose-600', desc: 'Sacred Cave Shrine Trek' },
-    { name: 'Amarnath', icon: '🧊', href: '/treks/amarnath', color: 'from-cyan-500 to-blue-600', desc: 'Ice Shiva Lingam Yatra' },
-    { name: 'Explore India Map', icon: '🗺️', href: '/explore', color: 'from-emerald-500 to-teal-600', desc: 'State-wise Sacred Places' },
-  ];
-
-  const stats = [
-    { label: 'Sacred Temples', value: '500+', icon: Flame },
-    { label: 'States Covered', value: '28+', icon: Map },
-    { label: 'Trek Routes', value: '50+', icon: Mountain },
-    { label: 'Pilgrimage Circuits', value: '10+', icon: Compass },
-  ];
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50/50 via-amber-50/30 to-rose-50/50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-950">
-      {/* Welcome Splash with Bharat Mata Ki Jai audio */}
+    <div className="min-h-screen bg-[#020617] text-slate-50 selection:bg-orange-500/30 overflow-x-hidden">
       {showSplash && (
         <WelcomeSplash onEnter={() => {
           setShowSplash(false);
@@ -73,298 +89,319 @@ export default function Home() {
 
       <Navbar user={user} />
 
-      <main className="pt-16">
-        {/* ========== HERO SECTION ========== */}
-        <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-          {/* Animated Background */}
-          <div className="absolute inset-0">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/8 via-red-500/5 to-amber-500/8" />
-            <div className="absolute inset-0 sacred-geometry opacity-30" />
-            {[...Array(30)].map((_, i) => {
-              const left = ((i * 37 + 13) % 100);
-              const top = ((i * 53 + 7) % 100);
-              const delay = ((i * 17 + 3) % 50) / 10;
-              const duration = 4 + ((i * 23 + 11) % 40) / 10;
-              return (
-                <div key={i} className="absolute animate-float opacity-20"
-                  style={{ left: `${left}%`, top: `${top}%`, animationDelay: `${delay}s`, animationDuration: `${duration}s` }}>
-                  <div className="w-1.5 h-1.5 bg-gradient-to-r from-orange-400 to-amber-400 rounded-full" />
-                </div>
-              );
-            })}
-          </div>
+      <main className="relative">
+        {/* ========== CINEMATIC HERO SECTION ========== */}
+        <section className="relative h-screen flex items-center justify-center overflow-hidden">
+          {/* Majestic Video/Image Background conceptually simulated */}
+          <motion.div style={{ y: yHero, opacity: opacityHero }} className="absolute inset-0 z-0">
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat opacity-40 mix-blend-luminosity" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#020617] via-transparent to-[#020617]" />
+            
+            {/* Sacred Geometry Overlay */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[url('/mandala.svg')] bg-contain bg-no-repeat opacity-5 animate-[spin_120s_linear_infinite]" />
+          </motion.div>
 
-          <div className="relative z-10 text-center max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            {/* Top Badge */}
-            <div className="mb-8">
-              <Badge className="bg-gradient-to-r from-orange-100 to-amber-100 dark:from-orange-950/50 dark:to-amber-950/50 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800 px-4 py-2 text-sm font-medium">
-                <Sparkles className="h-3.5 w-3.5 mr-2" />
-                Your Sacred Journey Starts Here
-              </Badge>
-            </div>
-
-            {/* Main Heading */}
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-bold leading-[1.1] tracking-tight">
-              <span className="bg-gradient-to-r from-orange-600 via-red-600 to-amber-600 bg-clip-text text-transparent">
-                Discover
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-amber-600 via-orange-600 to-rose-600 bg-clip-text text-transparent">
-                Divine India
-              </span>
-            </h1>
-
-            <p className="text-lg sm:text-xl text-muted-foreground mt-6 max-w-3xl mx-auto leading-relaxed">
-              One platform for all sacred pilgrimages, treks, and temple journeys across India.
-              From <strong className="text-orange-600">Char Dham</strong> to <strong className="text-orange-600">Kailash Mansarovar</strong>,
-              plan your spiritual journey with complete route guides, transport options, and local insights.
-            </p>
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
-              <Link href="/pilgrimages/char-dham">
-                <Button size="lg" className="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white px-8 py-6 text-lg rounded-2xl shadow-2xl shadow-orange-500/25 hover:shadow-orange-500/40 transition-all hover:scale-105">
-                  <Mountain className="h-5 w-5 mr-2" />
-                  Explore Char Dham
-                </Button>
-              </Link>
-              <Link href="/explore">
-                <Button size="lg" variant="outline" className="border-2 border-orange-300 dark:border-orange-800 hover:bg-orange-50 dark:hover:bg-orange-950/30 px-8 py-6 text-lg rounded-2xl transition-all hover:scale-105">
-                  <Map className="h-5 w-5 mr-2" />
-                  Explore India Map
-                </Button>
-              </Link>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-16">
-              {stats.map((stat, i) => (
-                <div key={i} className="text-center group">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-950/50 dark:to-amber-950/50 mb-3 group-hover:scale-110 transition-transform">
-                    <stat.icon className="h-6 w-6 text-orange-600" />
-                  </div>
-                  <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ========== QUICK LINKS ========== */}
-        <section className="py-20 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-                Popular <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Sacred Journeys</span>
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">Explore the most revered pilgrimages and spiritual treks across India</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {quickLinks.map((link, i) => (
-                <Link key={i} href={link.href} className="group">
-                  <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-1.5 bg-white dark:bg-slate-900 h-full">
-                    <div className={`h-2 bg-gradient-to-r ${link.color}`} />
-                    <CardContent className="p-6 flex items-center space-x-4">
-                      <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${link.color} flex items-center justify-center text-2xl shadow-lg shrink-0`}>
-                        {link.icon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-foreground group-hover:text-orange-600 transition-colors">{link.name}</h3>
-                        <p className="text-sm text-muted-foreground mt-0.5">{link.desc}</p>
-                      </div>
-                      <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-orange-600 group-hover:translate-x-1 transition-all shrink-0" />
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ========== PILGRIMAGE CIRCUITS ========== */}
-        <section className="py-20 px-4 bg-gradient-to-b from-transparent via-orange-50/50 to-transparent dark:via-orange-950/10">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-                Sacred <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Pilgrimage Circuits</span>
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">Complete guides to India's most sacred pilgrimage routes with transport, timing, and budget details</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <CircuitCard {...charDhamCircuit} href="/pilgrimages/char-dham" />
-              <CircuitCard {...jyotirlingaCircuit} href="/pilgrimages/jyotirlingas" />
-              <CircuitCard {...shaktiPeethaCircuit} href="/pilgrimages/shakti-peethas" />
-            </div>
-          </div>
-        </section>
-
-        {/* ========== SACRED TREKS ========== */}
-        <section className="py-20 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-12">
-              <div>
-                <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-                  Sacred <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Treks & Yatras</span>
-                </h2>
-                <p className="text-muted-foreground">Trek routes, difficulty levels, and complete travel guides</p>
+          <div className="relative z-10 text-center max-w-5xl mx-auto px-4 mt-20">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              className="mb-8 font-serif"
+            >
+              <div className="inline-flex items-center justify-center space-x-2 bg-white/5 border border-white/10 backdrop-blur-xl px-5 py-2 rounded-full mb-8">
+                <Sparkles className="w-4 h-4 text-orange-400 animate-pulse" />
+                <span className="text-sm font-medium tracking-widest text-slate-300 uppercase">Auspicious Journeys Await</span>
               </div>
-              <Link href="/treks" className="hidden sm:block">
-                <Button variant="outline" className="border-emerald-200">View All Treks <ArrowRight className="h-4 w-4 ml-2" /></Button>
-              </Link>
-            </div>
+              
+              <h1 className="text-6xl sm:text-8xl md:text-9xl font-bold tracking-tighter leading-none">
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-amber-400 to-yellow-500 pb-2">
+                  Divine
+                </span>
+                <span className="block text-white" style={{ textShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+                  India
+                </span>
+              </h1>
+            </motion.div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sacredTreks.slice(0, 3).map((trek) => (
-                <Link key={trek.id} href={`/treks/${trek.id}`} className="group">
-                  <Card className="overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 bg-white dark:bg-slate-900 h-full">
-                    <div className="h-36 bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center relative overflow-hidden">
-                      <Mountain className="h-16 w-16 text-white/30 absolute right-4 bottom-2" />
-                      <div className="relative text-center z-10">
-                        <h3 className="text-white text-xl font-bold">{trek.name}</h3>
-                        <p className="text-white/70 text-sm mt-1">{trek.location}</p>
-                      </div>
-                      <Badge className={`absolute top-3 right-3 text-xs ${
-                        trek.difficulty === 'easy' ? 'bg-green-500' : trek.difficulty === 'moderate' ? 'bg-yellow-500' : trek.difficulty === 'hard' ? 'bg-orange-500' : 'bg-red-500'
-                      } text-white border-0`}>
-                        {trek.difficulty.charAt(0).toUpperCase() + trek.difficulty.slice(1)}
-                      </Badge>
-                    </div>
-                    <CardContent className="p-5 space-y-3">
-                      <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                        <span className="flex items-center"><Mountain className="h-3 w-3 mr-1" /> {trek.elevation}</span>
-                        <span className="flex items-center"><Clock className="h-3 w-3 mr-1" /> {trek.duration}</span>
-                      </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">{trek.description}</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {trek.routes.slice(0, 3).map((r, i) => (
-                          <Badge key={i} variant="secondary" className="text-[10px] bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-400">
-                            {r.name.split('(')[0].trim()}
-                          </Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="text-lg sm:text-2xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-light mb-12"
+            >
+              Experience the pinnacle of spiritual travel. Immersive guides, breathtaking 3D treks, and deep mythological lore for the earnest seeker.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.8 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-6"
+            >
+              <Button
+                size="lg"
+                onMouseEnter={playSoftBell}
+                onClick={playBell}
+                className="group relative h-16 px-10 rounded-full bg-gradient-to-r from-orange-600 to-amber-600 text-white text-lg overflow-hidden hover:scale-105 transition-all duration-300 shadow-[0_0_40px_-10px_rgba(249,115,22,0.5)] border border-orange-500/50"
+              >
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                <span className="relative z-10 flex items-center font-semibold">
+                  <Play className="w-5 h-5 mr-3 fill-current" />
+                  Begin Pilgrimage
+                </span>
+              </Button>
+
+              <Button
+                size="lg"
+                variant="outline"
+                onMouseEnter={playSoftBell}
+                className="group h-16 px-10 rounded-full border border-slate-700 bg-white/5 hover:bg-white/10 text-white text-lg backdrop-blur-md transition-all duration-300"
+              >
+                <Map className="w-5 h-5 mr-3 text-orange-400 group-hover:rotate-12 transition-transform" />
+                Interactive Map
+              </Button>
+            </motion.div>
+          </div>
+
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2, delay: 1.5 }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center"
+          >
+            <span className="text-xs tracking-[0.3em] text-slate-500 uppercase mb-4">Descend</span>
+            <ArrowDown className="w-5 h-5 text-slate-600 animate-bounce" />
+          </motion.div>
+        </section>
+
+        {/* ========== SACRED CIRCUITS (TOP 0.0001% UI) ========== */}
+        <section className="py-32 px-4 relative z-10 bg-[#020617]">
+          <div className="max-w-7xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-20 text-center"
+            >
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-white mb-6">
+                Revered <span className="text-orange-500 inline-block italic">Circuits</span>
+              </h2>
+              <p className="text-slate-400 max-w-2xl mx-auto text-lg">
+                Walk the ancient paths traced by sages. Experience India's most powerful energetic centers through our hyper-detailed immersive guides.
+              </p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+              <PremiumCircuitCard 
+                title="Char Dham"
+                description="The ultimate Himalayan pilgrimage securing moksha. Journey to Yamunotri, Gangotri, Kedarnath, and Badrinath."
+                stats={[{ icon: Mountain, value: "10,000+ ft" }, { icon: MapPin, value: "Uttarakhand" }]}
+                href="/pilgrimages/char-dham"
+                imageGradient="from-transparent via-cyan-900/80 to-blue-950"
+                index={0}
+              />
+              <PremiumCircuitCard 
+                title="12 Jyotirlingas"
+                description="The radiant manifestations of Lord Shiva scattered across the Indian subcontinent."
+                stats={[{ icon: Flame, value: "12 Shrines" }, { icon: MapPin, value: "Pan-India" }]}
+                href="/pilgrimages/jyotirlingas"
+                imageGradient="from-transparent via-orange-900/80 to-red-950"
+                index={1}
+              />
+              <PremiumCircuitCard 
+                title="52 Shakti Peethas"
+                description="Cosmic power centers where the segments of Goddess Sati's form fell to Earth, pulsating with divine feminine energy."
+                stats={[{ icon: Star, value: "52 Seats" }, { icon: MapPin, value: "South Asia" }]}
+                href="/pilgrimages/shakti-peethas"
+                imageGradient="from-transparent via-rose-900/80 to-purple-950"
+                index={2}
+              />
             </div>
           </div>
         </section>
 
-        {/* ========== STATES EXPLORER PREVIEW ========== */}
-        <section className="py-20 px-4 bg-gradient-to-b from-transparent via-blue-50/50 to-transparent dark:via-blue-950/10">
+        {/* ========== IMMERSIVE TREKS SHOWCASE ========== */}
+        <section className="py-32 px-4 relative z-10 border-t border-white/5 bg-gradient-to-b from-[#020617] to-slate-950">
           <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-                Explore by <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">State</span>
-              </h2>
-              <p className="text-muted-foreground max-w-2xl mx-auto">Every Indian state has its own sacred heritage. Discover temples, rivers, and treks state by state.</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {featuredStates.map((state) => (
-                <Link key={state.id} href={`/explore?state=${state.id}`} className="group">
-                  <Card className="overflow-hidden border-0 shadow-md hover:shadow-xl transition-all duration-500 hover:-translate-y-1 bg-white dark:bg-slate-900">
-                    <CardContent className="p-6">
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <h3 className="font-semibold text-lg group-hover:text-blue-600 transition-colors">{state.name}</h3>
-                          <p className="text-xs text-muted-foreground capitalize">{state.region} India</p>
-                        </div>
-                        <Badge variant="secondary" className="text-xs">{state.famousTemples.length} temples</Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4">{state.description}</p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {state.highlights.slice(0, 3).map((h, i) => (
-                          <Badge key={i} variant="outline" className="text-[10px]">{h}</Badge>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-
-            <div className="text-center mt-10">
-              <Link href="/explore">
-                <Button size="lg" variant="outline" className="border-blue-200 hover:bg-blue-50 dark:hover:bg-blue-950/30">
-                  <Globe className="h-5 w-5 mr-2" />
-                  View All States & Interactive Map
-                  <ArrowRight className="h-4 w-4 ml-2" />
+            <div className="flex flex-col lg:flex-row justify-between items-end mb-16">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="max-w-xl"
+              >
+                <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">
+                  Ascend the <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-teal-600">Sacred Peaks</span>
+                </h2>
+                <p className="text-slate-400 text-lg">
+                  Before you lace your boots, experience our stunning 3D trail map previews, Mata's temple galleries, and real-time high-altitude weather data.
+                </p>
+              </motion.div>
+              <Link href="/treks">
+                <Button variant="link" className="text-emerald-500 hover:text-emerald-400 group text-lg" onMouseEnter={playSoftBell}>
+                  View All Yatras <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-2 transition-transform" />
                 </Button>
               </Link>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Featured Large Trek Card */}
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                className="md:col-span-2 lg:col-span-1"
+                onMouseEnter={playSoftBell}
+              >
+                <Link href="/treks/vaishno-devi" className="block relative group h-[500px] rounded-3xl overflow-hidden cursor-pointer">
+                  <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1626014903706-e7811985c782?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center transition-transform duration-1000 group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+                  <div className="absolute inset-0 p-10 flex flex-col justify-end">
+                    <Badge className="w-fit bg-red-600 hover:bg-red-700 text-white mb-4 border-none px-4 py-1 text-xs tracking-widest uppercase">Mata Darshan</Badge>
+                    <h3 className="text-4xl font-serif font-bold text-white mb-3">Mata Vaishno Devi</h3>
+                    <p className="text-slate-300 font-light max-w-md line-clamp-2">The holy cave shrine nestled intricately in the Trikuta Mountains of Jammu and Kashmir.</p>
+                  </div>
+                </Link>
+              </motion.div>
+
+              {/* Stacked smaller cards */}
+              <div className="flex flex-col gap-8 lg:col-span-1">
+                {[
+                  { name: 'Amarnath Yatra', desc: 'The mystical ice lingam formations in the Himalayas.', img: 'https://images.unsplash.com/photo-1542318025-a45e45a278d6?q=80&w=2070&auto=format&fit=crop', color: 'cyan' },
+                  { name: 'Kailash Mansarovar', desc: 'The ultimate circumambulation of Lord Shiva’s earthly abode.', img: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop', color: 'purple' }
+                ].map((item, i) => (
+                  <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, x: 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.2 }}
+                    onMouseEnter={playSoftBell}
+                  >
+                    <Link href={`/treks`} className="block group relative h-[234px] rounded-3xl overflow-hidden cursor-pointer">
+                      <div 
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
+                        style={{ backgroundImage: `url('${item.img}')` }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent" />
+                      <div className="absolute inset-0 p-8 flex flex-col justify-center max-w-[70%]">
+                        <h3 className="text-2xl font-serif font-bold text-white mb-2">{item.name}</h3>
+                        <p className="text-slate-400 font-light text-sm line-clamp-2">{item.desc}</p>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* ========== WHY DIVINORA ========== */}
-        <section className="py-20 px-4">
-          <div className="max-w-5xl mx-auto text-center">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-12">
-              Why <span className="bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Divinora</span>?
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { icon: BookOpen, title: 'Deep Knowledge', desc: 'History, mythology & significance of every sacred place — not just booking info.' },
-                { icon: Compass, title: 'Route Options', desc: 'Walk, pony, palki, helicopter — every route with cost, time & difficulty.' },
-                { icon: Map, title: 'Interactive Map', desc: 'Explore sacred India state by state with an interactive map.' },
-                { icon: Heart, title: 'For Everyone', desc: 'Written in English for Indians & international pilgrims alike.' },
-              ].map((item, i) => (
-                <Card key={i} className="border-0 shadow-md bg-white dark:bg-slate-900 p-6 text-center hover:shadow-lg transition-shadow">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-100 to-amber-100 dark:from-orange-950/50 dark:to-amber-950/50 flex items-center justify-center mx-auto mb-4">
-                    <item.icon className="h-6 w-6 text-orange-600" />
+        {/* ========== NEW FEATURE HIGHLIGHT: REELS & COMMUNITY ========== */}
+        <section className="py-32 px-4 relative overflow-hidden bg-slate-950">
+          <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[800px] h-[800px] bg-orange-600/10 rounded-full blur-[120px] pointer-events-none" />
+          
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <Badge variant="outline" className="text-orange-500 border-orange-500/30 bg-orange-500/10 mb-6">Community Connect</Badge>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6">Live Devotional <span className="italic font-light">Experiences</span></h2>
+              <p className="text-slate-400 max-w-2xl mx-auto text-lg">Watch real-time Reels, live darshans, and visual trek updates integrated directly from the community.</p>
+            </div>
+
+            {/* Mockup of a stunning Instagram Reel grid */}
+            <div className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide py-4 px-4">
+              {[1, 2, 3, 4].map((i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="shrink-0 snap-center w-[280px] h-[500px] bg-slate-900 rounded-[2rem] border border-white/10 overflow-hidden relative group shadow-2xl shadow-black"
+                  onMouseEnter={playSoftBell}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/90 z-10" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Play className="w-12 h-12 text-white/50 group-hover:text-white group-hover:scale-110 transition-all z-20 drop-shadow-lg" />
                   </div>
-                  <h3 className="font-semibold mb-2">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground">{item.desc}</p>
-                </Card>
+                  <img src={`https://images.unsplash.com/photo-${i === 1 ? '1544253372-747125e1a12a' : i===2 ? '1518002171953-a080ee817e1f' : i===3 ? '1582508688439-b9d9df3c0e35' : '1604505293673-aee3c10d32c5'}?w=400&h=800&fit=crop`} alt="Reel" className="object-cover w-full h-full opacity-60 group-hover:opacity-90 transition-opacity duration-500" />
+                  <div className="absolute bottom-6 left-6 right-6 z-20">
+                    <p className="text-white text-sm font-medium mb-1">@divinora_pilgrim</p>
+                    <p className="text-white/70 text-xs">Aarti view from the sacred Ghats... 🙏✨ #DivineIndia</p>
+                  </div>
+                </motion.div>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ========== YATRA CALENDAR ========== */}
+        <section className="py-20 px-4 bg-[#020617] relative z-10 border-t border-white/5">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-serif font-bold text-white mb-4">Sacred Time</h2>
+              <p className="text-slate-400">Align your journeys with the auspicious cosmic calendar.</p>
+            </div>
+            <div className="bg-slate-900/50 p-8 rounded-[2rem] border border-slate-800">
+               <SeasonalCalendar />
             </div>
           </div>
         </section>
 
         {/* ========== FOOTER ========== */}
-        <footer className="bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-950 border-t border-orange-100 dark:border-slate-800">
-          <div className="max-w-7xl mx-auto px-4 py-16">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+        <footer className="bg-[#020617] border-t border-white/10 relative overflow-hidden">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-px bg-gradient-to-r from-transparent via-orange-500 to-transparent opacity-50" />
+          
+          <div className="max-w-7xl mx-auto px-4 py-20">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
               <div className="md:col-span-1">
-                <div className="flex items-center space-x-3 mb-4">
-                  <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-xl flex items-center justify-center">
-                    <span className="text-white font-bold text-lg">ॐ</span>
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(249,115,22,0.4)]">
+                    <span className="text-white font-bold text-2xl">ॐ</span>
                   </div>
-                  <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">Divinora</span>
+                  <span className="text-2xl font-bold text-white tracking-widest uppercase font-serif">Divinora</span>
                 </div>
-                <p className="text-sm text-muted-foreground">Your complete guide to India's sacred pilgrimages, temples, and spiritual journeys.</p>
+                <p className="text-sm text-slate-400 font-light leading-relaxed">
+                  The ultimate spiritual super app connecting global seekers to the sacred heart of India. Revere, Explore, Ascend.
+                </p>
               </div>
+              
               <div>
-                <h4 className="font-semibold mb-4">Pilgrimages</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li><Link href="/pilgrimages/char-dham" className="hover:text-orange-600">Char Dham Yatra</Link></li>
-                  <li><Link href="/pilgrimages/jyotirlingas" className="hover:text-orange-600">12 Jyotirlingas</Link></li>
-                  <li><Link href="/pilgrimages/shakti-peethas" className="hover:text-orange-600">52 Shakti Peethas</Link></li>
-                  <li><Link href="/pilgrimages/sapta-puri" className="hover:text-orange-600">Sapta Puri</Link></li>
+                <h4 className="text-white font-medium mb-6 uppercase tracking-wider text-sm">Sacred Circuits</h4>
+                <ul className="space-y-4 text-sm text-slate-400 font-light">
+                  <li><Link href="/pilgrimages/char-dham" className="hover:text-orange-400 transition-colors">Char Dham Yatra</Link></li>
+                  <li><Link href="/pilgrimages/jyotirlingas" className="hover:text-orange-400 transition-colors">12 Jyotirlingas</Link></li>
+                  <li><Link href="/pilgrimages/shakti-peethas" className="hover:text-orange-400 transition-colors">52 Shakti Peethas</Link></li>
+                  <li><Link href="/pilgrimages/sapta-puri" className="hover:text-orange-400 transition-colors">Sapta Puri</Link></li>
                 </ul>
               </div>
+              
               <div>
-                <h4 className="font-semibold mb-4">Sacred Treks</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li><Link href="/treks/vaishno-devi" className="hover:text-orange-600">Vaishno Devi</Link></li>
-                  <li><Link href="/treks/amarnath" className="hover:text-orange-600">Amarnath Yatra</Link></li>
-                  <li><Link href="/treks/kedarnath-trek" className="hover:text-orange-600">Kedarnath Trek</Link></li>
-                  <li><Link href="/treks/kailash-mansarovar" className="hover:text-orange-600">Kailash Mansarovar</Link></li>
+                <h4 className="text-white font-medium mb-6 uppercase tracking-wider text-sm">Features</h4>
+                <ul className="space-y-4 text-sm text-slate-400 font-light">
+                  <li><Link href="/explore" className="hover:text-orange-400 transition-colors">Interactive 3D Map</Link></li>
+                  <li><Link href="/calendar" className="hover:text-orange-400 transition-colors">Yatra Calendar</Link></li>
+                  <li><Link href="/deities" className="hover:text-orange-400 transition-colors">Deity Legends & Lore</Link></li>
+                  <li><Link href="/foreign-guide" className="hover:text-orange-400 transition-colors">Foreigner Guide</Link></li>
                 </ul>
               </div>
+              
               <div>
-                <h4 className="font-semibold mb-4">Explore</h4>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li><Link href="/explore" className="hover:text-orange-600">Interactive India Map</Link></li>
-                  <li><Link href="/deities" className="hover:text-orange-600">Deity Encyclopedia</Link></li>
-                </ul>
+                <h4 className="text-white font-medium mb-6 uppercase tracking-wider text-sm">Connect</h4>
+                <p className="text-sm text-slate-400 font-light mb-4">Join 100,000+ earnest seekers tracking their sacred journeys.</p>
+                <div className="flex gap-4">
+                  {/* Social icons placeholders */}
+                  <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-orange-500/20 cursor-pointer transition-colors border border-white/10"><Globe className="w-4 h-4 text-slate-300" /></div>
+                </div>
               </div>
             </div>
-            <div className="border-t border-orange-100 dark:border-slate-800 mt-12 pt-8 text-center">
-              <p className="text-sm text-muted-foreground">© 2026 Divinora. Crafted with 🙏 for seekers of the Divine.</p>
+            
+            <div className="border-t border-white/10 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 font-light">
+              <p>© 2026 Divinora. Built for the earnest seeker.</p>
+              <div className="flex space-x-6 mt-4 md:mt-0">
+                <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
+                <Link href="#" className="hover:text-white transition-colors">Terms</Link>
+              </div>
             </div>
           </div>
         </footer>

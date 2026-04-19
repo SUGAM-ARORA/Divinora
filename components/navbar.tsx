@@ -4,10 +4,11 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import {
-  Mountain, Map, BookOpen, Compass, Menu, X, Sparkles, LogIn, ChevronDown
+  Mountain, Map, BookOpen, Compass, Menu, X, Sparkles, LogIn, ChevronDown, VolumeX, Volume2
 } from 'lucide-react';
-import { AuthDialog } from '@/components/auth/auth-dialog';
+import { JourneyOnboarding } from '@/components/auth/journey-onboarding';
 import { UserNav } from '@/components/user-nav';
+import { useAudio } from '@/components/audio-provider';
 
 interface NavbarProps {
   user?: any;
@@ -40,6 +41,7 @@ export function Navbar({ user }: NavbarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const { playSoftBell, toggleOmChant, isOmPlaying } = useAudio();
 
   return (
     <>
@@ -68,7 +70,10 @@ export function Navbar({ user }: NavbarProps) {
                 <div
                   key={link.label}
                   className="relative"
-                  onMouseEnter={() => link.subLinks && setOpenDropdown(link.label)}
+                  onMouseEnter={() => {
+                    if (link.subLinks) setOpenDropdown(link.label);
+                    playSoftBell();
+                  }}
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
                   <Link href={link.href} onClick={(e) => {
@@ -101,11 +106,22 @@ export function Navbar({ user }: NavbarProps) {
 
             {/* Right side */}
             <div className="hidden lg:flex items-center space-x-3">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={toggleOmChant} 
+                title={isOmPlaying ? "Mute Ambient Chant" : "Play Ambient Chant"}
+                className={isOmPlaying ? "text-orange-500 animate-pulse" : "text-slate-400"}
+              >
+                {isOmPlaying ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+              </Button>
+
               {user ? (
                 <UserNav user={user} />
               ) : (
                 <Button onClick={() => setShowAuthDialog(true)}
-                  className="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all"
+                  onMouseEnter={playSoftBell}
+                  className="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 transition-all font-serif tracking-wider"
                 >
                   <LogIn className="h-4 w-4 mr-2" />
                   Join Journey
@@ -160,7 +176,7 @@ export function Navbar({ user }: NavbarProps) {
         )}
       </nav>
 
-      <AuthDialog isOpen={showAuthDialog} onClose={() => setShowAuthDialog(false)} onSuccess={() => setShowAuthDialog(false)} />
+      <JourneyOnboarding open={showAuthDialog} onOpenChange={setShowAuthDialog} />
     </>
   );
 }

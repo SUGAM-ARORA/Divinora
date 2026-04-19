@@ -3,15 +3,18 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { sacredTreks } from '@/lib/data';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Navbar } from '@/components/navbar';
 import { supabase } from '@/lib/supabase';
+import { WeatherWidget } from '@/components/weather-widget';
+import { useAudio } from '@/components/audio-provider';
 import {
   ArrowLeft, Mountain, Clock, MapPin, Plane, Train, Bus, Footprints,
-  AlertTriangle, CheckCircle, Star, IndianRupee, Calendar, ThermometerSun, PersonStanding
+  AlertTriangle, CheckCircle, Star, IndianRupee, Calendar, ThermometerSun, PersonStanding, Play
 } from 'lucide-react';
 
 const modeIcons: Record<string, { icon: any; color: string }> = {
@@ -28,6 +31,10 @@ export default function TrekDetailPage() {
   const params = useParams();
   const [user, setUser] = useState<any>(null);
   const trek = sacredTreks.find(t => t.id === params.id);
+  const { playSoftBell, isOmPlaying, toggleOmChant } = useAudio();
+  const { scrollYProgress } = useScroll();
+  const yBg = useTransform(scrollYProgress, [0, 1], [0, 300]);
+  const opacityHero = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => setUser(session?.user || null));
@@ -37,173 +44,197 @@ export default function TrekDetailPage() {
 
   if (!trek) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Trek Not Found</h1>
-          <Link href="/treks"><Button>← Back to Treks</Button></Link>
+          <h1 className="text-2xl font-bold mb-4 text-white">Trek Not Found</h1>
+          <Link href="/treks"><Button variant="outline">← Back to Treks</Button></Link>
         </div>
       </div>
     );
   }
 
+  // Choose a majestic background based on the trek
+  const bgImage = trek.id === 'vaishno-devi' 
+    ? 'https://images.unsplash.com/photo-1626014903706-e7811985c782?q=80&w=2070&auto=format&fit=crop' 
+    : 'https://images.unsplash.com/photo-1542318025-a45e45a278d6?q=80&w=2070&auto=format&fit=crop';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50/50 via-teal-50/30 to-green-50/50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-950">
+    <div className="min-h-screen bg-[#020617] text-slate-50 overflow-x-hidden selection:bg-orange-500/30">
       <Navbar user={user} />
-      <main className="pt-16">
-        {/* Hero */}
-        <section className="relative py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/15 via-teal-500/10 to-green-500/15" />
-          <Mountain className="absolute right-10 bottom-5 h-40 w-40 text-emerald-500/10" />
-          <div className="relative z-10 max-w-5xl mx-auto px-4">
-            <Link href="/treks" className="inline-flex items-center text-sm text-muted-foreground hover:text-emerald-600 mb-8"><ArrowLeft className="h-4 w-4 mr-2" />All Treks</Link>
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                <Mountain className="h-8 w-8 text-white" />
+      
+      <main className="relative">
+        {/* PARALLAX HERO SECTION */}
+        <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
+          <motion.div style={{ y: yBg, opacity: opacityHero }} className="absolute inset-0 z-0">
+            <div 
+              className="absolute inset-0 bg-cover bg-center brightness-[0.4] scale-105" 
+              style={{ backgroundImage: `url('${bgImage}')` }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/50 to-transparent" />
+          </motion.div>
+
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 mt-20">
+            <Link href="/treks" className="inline-flex items-center text-sm text-slate-400 hover:text-white transition-colors mb-8 bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10" onMouseEnter={playSoftBell}>
+              <ArrowLeft className="h-4 w-4 mr-2" /> Return to Treks
+            </Link>
+            
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+            >
+              <div className="flex flex-wrap gap-3 mb-6">
+                <Badge className={`${diffColors[trek.difficulty]} text-white border-0 text-xs px-4 py-1.5 capitalize tracking-wider`}>{trek.difficulty} Trek</Badge>
+                <Badge variant="outline" className="text-xs px-4 py-1.5 text-amber-400 border-amber-400/30 bg-amber-400/10 tracking-widest uppercase">{trek.deity}</Badge>
               </div>
-              <div>
-                <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">{trek.name}</h1>
-                <p className="text-muted-foreground mt-1 flex items-center gap-2"><MapPin className="h-4 w-4" />{trek.location}</p>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2 mb-6">
-              <Badge className={`${diffColors[trek.difficulty]} text-white border-0 text-sm px-3 py-1 capitalize`}>{trek.difficulty}</Badge>
-              <Badge variant="secondary" className="text-sm">{trek.deity}</Badge>
-            </div>
-            <p className="text-lg text-muted-foreground max-w-4xl leading-relaxed">{trek.description}</p>
+              <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-4 font-serif" style={{ textShadow: '0 10px 30px rgba(0,0,0,0.8)' }}>
+                {trek.name}
+              </h1>
+              <p className="text-xl md:text-2xl text-slate-300 font-light flex items-center gap-2 max-w-2xl text-shadow-md">
+                <MapPin className="h-6 w-6 text-orange-500" /> {trek.location}
+              </p>
+            </motion.div>
           </div>
         </section>
 
-        {/* Quick Stats */}
-        <section className="py-8 px-4">
-          <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {[
-              { icon: Mountain, label: 'Elevation', value: trek.elevation },
-              { icon: Footprints, label: 'Distance', value: trek.distance },
-              { icon: Clock, label: 'Duration', value: trek.duration },
-              { icon: Calendar, label: 'Best Months', value: trek.bestMonths.slice(0, 3).join(', ') }
-            ].map((s, i) => (
-              <Card key={i} className="border-0 shadow-md bg-white dark:bg-slate-900">
-                <CardContent className="p-4 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center shrink-0"><s.icon className="h-5 w-5 text-emerald-600" /></div>
-                  <div><p className="text-xs text-muted-foreground">{s.label}</p><p className="text-sm font-semibold">{s.value}</p></div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
+        {/* CONTENT & WEATHER */}
+        <section className="py-20 px-4 relative z-10 -mt-20">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
+            
+            {/* Left Column: Description & Media */}
+            <div className="lg:col-span-2 space-y-12">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="prose prose-invert prose-lg max-w-none"
+              >
+                <p className="text-xl text-slate-300 leading-relaxed font-light">{trek.description}</p>
+              </motion.div>
 
-        {/* Route Options — THE KEY FEATURE */}
-        <section className="py-8 px-4">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">🛤️ Journey Mode Options</h2>
-            <p className="text-muted-foreground mb-6">Choose your preferred way to reach {trek.name} — from walking to helicopter, here are all options:</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              {trek.routes.map((route, i) => {
-                const mode = modeIcons[route.mode] || modeIcons.trek;
-                const Icon = mode.icon;
-                return (
-                  <Card key={i} className="border-0 shadow-lg bg-white dark:bg-slate-900 overflow-hidden hover:shadow-xl transition-shadow">
-                    <div className={`h-2 bg-gradient-to-r ${mode.color}`} />
-                    <CardContent className="p-5">
-                      <div className="flex items-start gap-4">
-                        <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${mode.color} flex items-center justify-center shadow-lg shrink-0`}>
-                          <Icon className="h-6 w-6 text-white" />
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-lg">{route.name}</h3>
-                          <Badge className={`${diffColors[route.difficulty]} text-white border-0 text-[10px] capitalize mt-1`}>{route.difficulty}</Badge>
-                        </div>
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-3">{route.description}</p>
-                      <div className="grid grid-cols-3 gap-3 mt-4">
-                        <div className="text-center p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
-                          <p className="text-[10px] text-muted-foreground">Distance</p>
-                          <p className="text-xs font-semibold">{route.distance}</p>
-                        </div>
-                        <div className="text-center p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
-                          <p className="text-[10px] text-muted-foreground">Duration</p>
-                          <p className="text-xs font-semibold">{route.duration}</p>
-                        </div>
-                        <div className="text-center p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
-                          <p className="text-[10px] text-muted-foreground">Cost</p>
-                          <p className="text-xs font-semibold">{route.cost || 'Varies'}</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* Highlights */}
-        <section className="py-8 px-4">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">✨ Highlights</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {trek.highlights.map((h, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 bg-white dark:bg-slate-900 rounded-xl shadow-sm">
-                  <Star className="h-4 w-4 text-amber-500 shrink-0" />
-                  <span className="text-sm">{h}</span>
+              {/* MEDIA GALLERY: Mata's Photos / Video Placeholder */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="space-y-6"
+              >
+                <h2 className="text-3xl font-serif text-white flex items-center"><Sparkles className="w-6 h-6 mr-3 text-orange-500"/> Divine Glimpses</h2>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="col-span-2 h-80 rounded-2xl overflow-hidden relative group cursor-pointer border border-white/10" onMouseEnter={playSoftBell}>
+                    <img src="https://images.unsplash.com/photo-1544253372-747125e1a12a?q=80&w=2070&auto=format&fit=crop" alt="Darshan" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-orange-500/80 flex items-center justify-center text-white backdrop-blur-sm group-hover:scale-110 transition-transform"><Play className="w-6 h-6 fill-current"/></div>
+                    </div>
+                  </div>
+                  <div className="h-48 rounded-xl overflow-hidden border border-white/10 group"><img src="https://images.unsplash.com/photo-1518002171953-a080ee817e1f?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"/></div>
+                  <div className="h-48 rounded-xl overflow-hidden border border-white/10 group"><img src="https://images.unsplash.com/photo-1604505293673-aee3c10d32c5?q=80&w=2070&auto=format&fit=crop" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"/></div>
                 </div>
-              ))}
+              </motion.div>
+
+              {/* 3D TRACK DEMO PLACEHOLDER */}
+              <motion.div
+                 initial={{ opacity: 0, y: 20 }}
+                 whileInView={{ opacity: 1, y: 0 }}
+                 viewport={{ once: true }}
+                 className="space-y-6 pt-8"
+              >
+                <h2 className="text-3xl font-serif text-white flex items-center"><Mountain className="w-6 h-6 mr-3 text-emerald-500"/> 3D Track Preview</h2>
+                <div className="w-full h-[400px] bg-slate-900 rounded-[2rem] border border-slate-800 flex flex-col items-center justify-center relative overflow-hidden group">
+                   <div className="absolute inset-0 bg-[url('/map-grid.svg')] opacity-20 group-hover:opacity-40 transition-opacity" />
+                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-slate-900" />
+                   <Compass className="w-16 h-16 text-slate-700 mb-4 animate-pulse" />
+                   <h3 className="text-xl text-slate-300 font-serif z-10">Interactive 3D Terrain Mode</h3>
+                   <p className="text-sm text-slate-500 mt-2 z-10 max-w-md text-center">Drag to rotate the mountain. Mapbox GL or Sketchfab embed loads here to give pilgrims a pre-journey view of the altitude and path.</p>
+                   <Button variant="outline" className="mt-6 z-10 border-emerald-500/50 text-emerald-400 hover:bg-emerald-500/10">Initialize High-Res Topology</Button>
+                </div>
+              </motion.div>
             </div>
+
+            {/* Right Column: Key Stats, Weather, Routes */}
+            <div className="space-y-8">
+              <WeatherWidget location={trek.name} altitude={trek.elevation} />
+
+              <Card className="bg-slate-900 border-slate-800">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-serif text-white mb-6">Sacred Geometry</h3>
+                  <div className="space-y-6">
+                    {[
+                      { icon: Mountain, label: 'Highest Elevation', value: trek.elevation, color: 'text-indigo-400' },
+                      { icon: Footprints, label: 'Total Distance', value: trek.distance, color: 'text-emerald-400' },
+                      { icon: Clock, label: 'Estimated Duration', value: trek.duration, color: 'text-amber-400' },
+                      { icon: Calendar, label: 'Auspicious Months', value: trek.bestMonths.join(', '), color: 'text-rose-400' }
+                    ].map((s, i) => (
+                      <div key={i} className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-xl bg-slate-950 flex items-center justify-center border border-white/5`}><s.icon className={`h-5 w-5 ${s.color}`} /></div>
+                        <div>
+                          <p className="text-xs text-slate-500 uppercase tracking-wider">{s.label}</p>
+                          <p className="text-sm font-medium text-slate-200">{s.value}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-900 border-slate-800">
+                <CardContent className="p-6">
+                  <h3 className="text-xl font-serif text-white mb-6">Available Paths</h3>
+                  <div className="space-y-4">
+                    {trek.routes.map((route, i) => {
+                      const mode = modeIcons[route.mode] || modeIcons.trek;
+                      const Icon = mode.icon;
+                      return (
+                        <div key={i} className="group p-4 rounded-xl border border-white/5 bg-[#020617] hover:border-orange-500/50 transition-colors" onMouseEnter={playSoftBell}>
+                          <div className="flex items-start gap-4">
+                            <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${mode.color} flex items-center justify-center shrink-0`}>
+                              <Icon className="h-4 w-4 text-white" />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-slate-200">{route.name}</h4>
+                              <p className="text-xs text-slate-400 mt-1">{route.duration} • {route.distance}</p>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            
           </div>
         </section>
-
-        {/* Essentials & Warnings */}
-        <section className="py-8 px-4">
-          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="border-0 shadow-lg bg-white dark:bg-slate-900">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><CheckCircle className="h-5 w-5 text-emerald-500" /> What to Carry</h3>
-                <ul className="space-y-2">
+        
+        {/* WARNINGS & PREP SECTION */}
+        <section className="py-20 border-t border-white/5 bg-[#020617]">
+          <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}>
+              <div className="p-8 rounded-[2rem] bg-gradient-to-br from-emerald-950/40 to-[#020617] border border-emerald-900/30 h-full">
+                <h3 className="text-2xl font-serif text-white mb-6 flex items-center"><CheckCircle className="w-8 h-8 text-emerald-500 mr-3"/> Seeker's Pack</h3>
+                <ul className="space-y-4">
                   {trek.essentials.map((e, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <CheckCircle className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />{e}
+                    <li key={i} className="flex items-start gap-3 text-slate-300">
+                      <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0 mt-0.5"><CheckCircle className="w-3 h-3 text-emerald-400" /></div>
+                      {e}
                     </li>
                   ))}
                 </ul>
-              </CardContent>
-            </Card>
-            <Card className="border-0 shadow-lg bg-white dark:bg-slate-900">
-              <CardContent className="p-6">
-                <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><AlertTriangle className="h-5 w-5 text-red-500" /> Important Warnings</h3>
-                <ul className="space-y-2">
+              </div>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}>
+              <div className="p-8 rounded-[2rem] bg-gradient-to-br from-red-950/40 to-[#020617] border border-red-900/30 h-full">
+                <h3 className="text-2xl font-serif text-white mb-6 flex items-center"><AlertTriangle className="w-8 h-8 text-red-500 mr-3"/> Sacred Discipline</h3>
+                <ul className="space-y-4">
                   {trek.warnings.map((w, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <AlertTriangle className="h-3.5 w-3.5 text-red-500 mt-0.5 shrink-0" />{w}
+                    <li key={i} className="flex items-start gap-3 text-slate-300">
+                      <div className="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center shrink-0 mt-0.5"><AlertTriangle className="w-3 h-3 text-red-400" /></div>
+                      {w}
                     </li>
                   ))}
                 </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        {/* Transport to Base */}
-        <section className="py-8 px-4 pb-20">
-          <div className="max-w-5xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">✈️ Getting to the Base</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Card className="border-0 shadow-md bg-white dark:bg-slate-900">
-                <CardContent className="p-5 flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/50 flex items-center justify-center shrink-0"><Plane className="h-5 w-5 text-sky-600" /></div>
-                  <div><h4 className="font-semibold">Nearest Airport</h4><p className="text-sm text-muted-foreground">{trek.nearestAirport}</p></div>
-                </CardContent>
-              </Card>
-              <Card className="border-0 shadow-md bg-white dark:bg-slate-900">
-                <CardContent className="p-5 flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center shrink-0"><Train className="h-5 w-5 text-amber-600" /></div>
-                  <div><h4 className="font-semibold">Nearest Railway</h4><p className="text-sm text-muted-foreground">{trek.nearestRailway}</p></div>
-                </CardContent>
-              </Card>
-            </div>
-            <div className="mt-6 p-5 bg-emerald-50 dark:bg-emerald-950/20 rounded-xl">
-              <h4 className="font-semibold mb-2">📍 Route: {trek.startPoint} → {trek.endPoint}</h4>
-              <p className="text-sm text-muted-foreground">Total distance: {trek.distance} | Elevation gain: up to {trek.elevation} | Best months: {trek.bestMonths.join(', ')}</p>
-            </div>
+              </div>
+            </motion.div>
           </div>
         </section>
       </main>

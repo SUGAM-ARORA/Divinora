@@ -2,20 +2,32 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Navbar } from '@/components/navbar';
+import { useAudio } from '@/components/audio-provider';
 import { shaktiPeethaCircuit, shaktiPeethaPlaces } from '@/lib/data';
 import { supabase } from '@/lib/supabase';
-import { ArrowLeft, MapPin, Calendar, Clock, IndianRupee, Star, ChevronDown, ChevronUp, Flame, Plane, Train, Bus, Footprints } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Clock, Star, Flame, Eye, X } from 'lucide-react';
 
-const transportIcons: Record<string, any> = { flight: Plane, train: Train, bus: Bus, car: Bus, trek: Footprints, helicopter: Plane };
+// Reusable animated placeholder array for visual grandeur
+const immersiveImages = [
+  "https://images.unsplash.com/photo-1544253372-747125e1a12a?q=80&w=2070&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1518002171953-a080ee817e1f?q=80&w=2070&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1582508688439-b9d9df3c0e35?q=80&w=2070&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1604505293673-aee3c10d32c5?q=80&w=2070&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1561081546-4cb46c5dfd6f?q=80&w=2070&auto=format&fit=crop"
+];
 
 export default function ShaktiPeethasPage() {
   const [user, setUser] = useState<any>(null);
-  const [expandedPlace, setExpandedPlace] = useState<string | null>(null);
+  const [selectedPlace, setSelectedPlace] = useState<any | null>(null);
   const [filterState, setFilterState] = useState<string>('all');
+  const { playSoftBell, isOmPlaying, toggleOmChant } = useAudio();
+  const { scrollYProgress } = useScroll();
+  const yBg = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => setUser(session?.user || null));
@@ -27,143 +39,194 @@ export default function ShaktiPeethasPage() {
   const filtered = filterState === 'all' ? shaktiPeethaPlaces : shaktiPeethaPlaces.filter(p => p.state === filterState);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50/50 via-pink-50/30 to-rose-50/50 dark:from-slate-950 dark:via-slate-950 dark:to-slate-950">
+    <div className="min-h-screen bg-[#020617] text-slate-50 selection:bg-rose-500/30 overflow-x-hidden">
       <Navbar user={user} />
-      <main className="pt-16">
-        {/* Hero */}
-        <section className="relative py-20 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-pink-500/5 to-rose-500/10" />
-          <div className="relative z-10 max-w-6xl mx-auto px-4">
-            <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-red-600 mb-8"><ArrowLeft className="h-4 w-4 mr-2" />Back to Home</Link>
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-pink-600 rounded-2xl flex items-center justify-center text-3xl shadow-lg shadow-red-500/30">{shaktiPeethaCircuit.icon}</div>
-              <div>
-                <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-red-600 via-pink-600 to-rose-600 bg-clip-text text-transparent">{shaktiPeethaCircuit.name}</h1>
-                <p className="text-muted-foreground mt-1">Where Goddess Sati's body parts fell — the seats of Shakti</p>
+      
+      <main className="relative">
+        {/* PARALLAX HERO SECTION */}
+        <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
+          <motion.div style={{ y: yBg }} className="absolute inset-0 z-0">
+            {/* Dark divine Goddess theme background */}
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1605806616949-1d87b487bb2a?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/70 to-[#020617]/30" />
+            <div className="absolute inset-0 bg-rose-950/20 mix-blend-color" />
+          </motion.div>
+
+          <div className="relative z-10 w-full max-w-7xl mx-auto px-4 mt-20 text-center">
+            <Link href="/pilgrimages" className="inline-flex items-center text-sm text-slate-400 hover:text-rose-400 transition-colors mb-8" onMouseEnter={playSoftBell}>
+              <ArrowLeft className="h-4 w-4 mr-2" /> All Sacred Circuits
+            </Link>
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+            >
+              <div className="inline-flex items-center justify-center space-x-2 mb-6">
+                <Flame className="w-8 h-8 text-rose-500 animate-pulse" />
               </div>
-            </div>
-            <p className="text-lg text-muted-foreground max-w-4xl leading-relaxed mb-8">{shaktiPeethaCircuit.longDescription}</p>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[{ icon: Flame, label: 'Total Peethas', value: '52 across South Asia' }, { icon: Calendar, label: 'Best Time', value: shaktiPeethaCircuit.bestSeason.split('(')[0] }, { icon: Clock, label: 'Duration', value: shaktiPeethaCircuit.estimatedDays }, { icon: IndianRupee, label: 'Budget', value: shaktiPeethaCircuit.estimatedBudget.split('(')[0] }].map((info, i) => (
-                <Card key={i} className="border-0 shadow-md bg-white/80 dark:bg-slate-900/80">
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/50 flex items-center justify-center shrink-0"><info.icon className="h-5 w-5 text-red-600" /></div>
-                    <div><p className="text-xs text-muted-foreground">{info.label}</p><p className="text-sm font-semibold">{info.value}</p></div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+              <h1 className="text-6xl md:text-9xl font-black tracking-tighter mb-6 font-serif">
+                <span className="bg-clip-text text-transparent bg-gradient-to-b from-rose-400 via-red-500 to-red-800">52 Shakti Peethas</span>
+              </h1>
+              <p className="text-xl md:text-2xl text-rose-100/70 font-light max-w-3xl mx-auto leading-relaxed">
+                Where fragments of the Divine Feminine fell to Earth. Traverse the cosmic power centers of Goddess Sati.
+              </p>
+            </motion.div>
           </div>
         </section>
 
-        {/* Mythology Story */}
-        <section className="py-12 px-4">
-          <div className="max-w-6xl mx-auto">
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-950/20 dark:to-pink-950/20">
-              <CardContent className="p-8">
-                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><span className="text-3xl">📜</span> The Legend of Sati & Shakti Peethas</h2>
-                <div className="text-sm text-muted-foreground space-y-3 leading-relaxed">
-                  <p>Goddess Sati, incarnation of Adi Shakti, married Lord Shiva against her father Daksha's wishes. Daksha organized a grand yagna but deliberately didn't invite Shiva.</p>
-                  <p>Sati went to the yagna uninvited, where Daksha publicly insulted Shiva. Unable to bear the humiliation, Sati self-immolated in the yagna fire.</p>
-                  <p>Mad with grief, Shiva picked up Sati's body and began the <strong className="text-red-600">Tandava</strong> — the cosmic dance of destruction that threatened to destroy all creation.</p>
-                  <p>To stop the destruction, Lord Vishnu used his <strong className="text-red-600">Sudarshana Chakra</strong> to dismember Sati's body. The 52 pieces fell across the Indian subcontinent, and each spot where a body part landed became a <strong className="text-red-600">Shakti Peetha</strong> — a sacred seat of the Goddess.</p>
-                  <p>At each Peetha, the form of Shakti (Goddess) and the form of Bhairava (Shiva as guardian) are unique, making each one spiritually distinct.</p>
-                </div>
-              </CardContent>
-            </Card>
+        {/* LORE SECTION */}
+        <section className="py-24 px-4 relative z-10 bg-[#020617] border-t border-rose-900/20">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 1 }}
+            >
+              <h2 className="text-3xl md:text-5xl font-serif text-white mb-8">The Cosmic Sacrifice</h2>
+              <p className="text-lg text-slate-300 leading-relaxed font-light mb-6">
+                Consumed by the fires of Daksha's yagna, the lifeless form of Sati was carried across dimensions by a grief-stricken Shiva. His destructive <em>Tandava</em> threatened the universe.
+              </p>
+              <p className="text-lg text-slate-300 leading-relaxed font-light mb-12">
+                To save creation, Vishnu severed Sati's body with his Sudarshana Chakra. The 52 fragments showered the earthly realm, embedding divine, vibrating energy wherever they landed. These became the <strong className="text-rose-400 font-semibold">Shakti Peethas</strong>.
+              </p>
+            </motion.div>
           </div>
         </section>
 
-        {/* Significance */}
-        <section className="py-8 px-4">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Why Shakti Peethas are Sacred</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {shaktiPeethaCircuit.significance.map((point, i) => (
-                <div key={i} className="flex items-start gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl shadow-sm">
-                  <Star className="h-5 w-5 text-red-500 shrink-0 mt-0.5" /><p className="text-sm text-muted-foreground">{point}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Filters */}
-        <section className="py-6 px-4">
-          <div className="max-w-6xl mx-auto flex flex-wrap gap-2 items-center">
-            <span className="text-sm font-medium mr-2">Filter:</span>
-            <Button variant={filterState === 'all' ? 'default' : 'outline'} size="sm" className="text-xs rounded-full" onClick={() => setFilterState('all')}>All ({shaktiPeethaPlaces.length})</Button>
+        {/* FILTERS */}
+        <section className="py-8 px-4 sticky top-16 z-40 bg-[#020617]/90 backdrop-blur-md border-y border-white/5">
+          <div className="max-w-7xl mx-auto flex gap-2 overflow-x-auto pb-2 scrollbar-hide items-center">
+            <span className="text-sm font-medium mr-2 text-rose-400 shrink-0 font-serif">Soothe by Kingdom:</span>
+            <Button variant={filterState === 'all' ? 'default' : 'outline'} size="sm" className={`rounded-full shrink-0 border-white/10 ${filterState === 'all' ? 'bg-rose-700 hover:bg-rose-600 text-white' : 'text-slate-400 hover:text-white hover:bg-white/5 bg-transparent'}`} onClick={() => { setFilterState('all'); playSoftBell(); }}>All Realms ({shaktiPeethaPlaces.length})</Button>
             {uniqueStates.map((state) => (
-              <Button key={state} variant={filterState === state ? 'default' : 'outline'} size="sm" className="text-xs rounded-full" onClick={() => setFilterState(state)}>
-                {state} ({shaktiPeethaPlaces.filter(p => p.state === state).length})
+              <Button key={state} variant={filterState === state ? 'default' : 'outline'} size="sm" className={`rounded-full shrink-0 border-white/10 ${filterState === state ? 'bg-rose-700 hover:bg-rose-600 text-white' : 'text-slate-400 hover:text-white hover:bg-white/5 bg-transparent'}`} onClick={() => { setFilterState(state); playSoftBell(); }}>
+                {state}
               </Button>
             ))}
           </div>
         </section>
 
-        {/* All Peethas */}
-        <section className="py-8 px-4 pb-20">
-          <div className="max-w-6xl mx-auto space-y-5">
-            {filtered.map((place, idx) => {
-              const isExpanded = expandedPlace === place.id;
-              return (
-                <Card key={place.id} className="overflow-hidden border-0 shadow-lg bg-white dark:bg-slate-900">
-                  <div className="h-2 bg-gradient-to-r from-red-500 to-pink-500" />
-                  <CardContent className="p-6">
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shrink-0">{shaktiPeethaPlaces.indexOf(place) + 1}</div>
-                        <div>
-                          <h3 className="text-xl font-bold">{place.name}</h3>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground mt-0.5"><MapPin className="h-3.5 w-3.5" />{place.location}</div>
-                          <p className="text-sm text-red-600 dark:text-red-400 font-medium mt-0.5">{place.deity}</p>
+        {/* IMMERSIVE GRID */}
+        <section className="py-16 px-4 bg-[#020617]">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {filtered.map((place, idx) => {
+                const img = immersiveImages[idx % immersiveImages.length];
+                return (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true, margin: "50px" }}
+                    transition={{ duration: 0.6, delay: (idx % 8) * 0.1 }}
+                    key={place.id}
+                  >
+                    <div 
+                      onClick={() => { setSelectedPlace({...place, img}); playSoftBell(); }}
+                      className="group relative h-[400px] rounded-[2rem] overflow-hidden cursor-pointer border border-rose-900/30 hover:border-rose-500/50 transition-colors"
+                    >
+                      <div 
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
+                        style={{ backgroundImage: `url('${img}')` }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-90 group-hover:opacity-75 transition-opacity" />
+                      <div className="absolute inset-0 bg-rose-950/20 mix-blend-multiply group-hover:mix-blend-normal transition-all" />
+                      
+                      <div className="absolute inset-x-0 bottom-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform">
+                        <div className="w-8 h-8 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs font-bold mb-3 shadow-[0_0_15px_rgba(225,29,72,0.5)]">
+                          {idx + 1}
                         </div>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {place.tags.slice(0, 3).map((tag, i) => <Badge key={i} variant="secondary" className="text-xs">{tag}</Badge>)}
+                        <h3 className="text-2xl font-serif font-bold text-white mb-1 line-clamp-1 group-hover:text-rose-300 transition-colors">{place.name}</h3>
+                        <p className="text-sm font-medium text-rose-400 mb-2">Deity: {place.deity}</p>
+                        <p className="text-xs text-slate-300 line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">{place.significance}</p>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground mb-3">{place.significance}</p>
-
-                    <Button variant="ghost" size="sm" className="hover:bg-red-50 dark:hover:bg-red-950/20" onClick={() => setExpandedPlace(isExpanded ? null : place.id)}>
-                      {isExpanded ? <ChevronUp className="h-4 w-4 mr-1" /> : <ChevronDown className="h-4 w-4 mr-1" />}
-                      {isExpanded ? 'Less' : 'Full Details'}
-                    </Button>
-
-                    {isExpanded && (
-                      <div className="space-y-5 pt-4 border-t mt-3 animate-in slide-in-from-top-2 duration-300">
-                        <div><h4 className="font-semibold mb-1">📜 History & Legend</h4><p className="text-sm text-muted-foreground">{place.history}</p></div>
-                        <p className="text-sm text-muted-foreground">{place.description}</p>
-                        <div>
-                          <h4 className="font-semibold mb-2">🚗 How to Reach</h4>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                            {place.howToReach.map((t, i) => {
-                              const Icon = transportIcons[t.mode] || Bus;
-                              return (
-                                <div key={i} className="flex items-start gap-2 p-2 bg-slate-50 dark:bg-slate-800 rounded-lg text-xs">
-                                  <Icon className="h-3.5 w-3.5 text-red-600 mt-0.5 shrink-0" />
-                                  <div><span className="font-medium capitalize">{t.mode}: </span><span className="text-muted-foreground">{t.description}</span>{t.cost && <span className="text-red-600 ml-1">({t.cost})</span>}</div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="p-3 bg-red-50 dark:bg-red-950/20 rounded-lg"><p className="text-xs font-medium">⏰ Timings</p><p className="text-xs text-muted-foreground">{place.timings}</p></div>
-                          <div className="p-3 bg-emerald-50 dark:bg-emerald-950/20 rounded-lg"><p className="text-xs font-medium">📅 Best Time</p><p className="text-xs text-muted-foreground">{place.bestTimeToVisit}</p></div>
-                        </div>
-                        {place.nearbyPlaces && (
-                          <div><h4 className="font-semibold text-sm mb-2">📍 Nearby</h4><div className="flex flex-wrap gap-1.5">{place.nearbyPlaces.map((np, i) => <Badge key={i} variant="outline" className="text-[10px]">{np}</Badge>)}</div></div>
-                        )}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
         </section>
+
+        {/* DETAILS MODAL */}
+        <AnimatePresence>
+          {selectedPlace && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#020617]/90 backdrop-blur-xl"
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                className="w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-[#020617] border border-rose-900/40 rounded-[2rem] shadow-[0_0_50px_rgba(225,29,72,0.15)] scrollbar-hide relative"
+              >
+                <div className="sticky top-0 right-0 z-10 flex justify-end p-4">
+                  <Button variant="ghost" size="icon" onClick={() => setSelectedPlace(null)} className="rounded-full bg-black/50 text-white hover:bg-rose-600 backdrop-blur-md">
+                    <X className="w-5 h-5" />
+                  </Button>
+                </div>
+                
+                <div className="relative h-[40vh] -mt-16">
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center" 
+                    style={{ backgroundImage: `url('${selectedPlace.img}')` }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-[#020617]/50" />
+                  <div className="absolute bottom-[-1px] left-0 right-0 h-32 bg-gradient-to-t from-[#020617] to-transparent" />
+                </div>
+
+                <div className="px-8 pb-12 -mt-10 relative z-10">
+                  <Badge className="bg-rose-600 text-white border-0 px-4 py-1.5 uppercase tracking-widest text-xs mb-4">{selectedPlace.location}</Badge>
+                  <h2 className="text-5xl font-serif text-white mb-2">{selectedPlace.name}</h2>
+                  <p className="text-xl text-rose-300 font-light mb-8 flex items-center"><Flame className="w-5 h-5 mr-2" /> Manifestation: {selectedPlace.deity}</p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div>
+                      <h3 className="text-2xl font-serif text-white mb-4 border-b border-rose-900/30 pb-2">Divine Significance</h3>
+                      <p className="text-lg text-slate-300 font-light italic mb-6">"{selectedPlace.significance}"</p>
+                      
+                      <h4 className="text-lg font-medium text-white mb-3">Tale of Epochs</h4>
+                      <p className="text-sm text-slate-400 leading-relaxed mb-6">{selectedPlace.history}</p>
+                      <p className="text-sm text-slate-400 leading-relaxed">{selectedPlace.description}</p>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="p-6 bg-rose-950/10 border border-rose-900/20 rounded-2xl">
+                        <h4 className="text-lg font-medium text-white mb-4 flex items-center"><Clock className="w-4 h-4 mr-2 text-rose-400"/> Temporal Details</h4>
+                        <div className="space-y-3">
+                          <div className="flex justify-between items-center border-b border-white/5 pb-2">
+                            <span className="text-sm text-slate-500">Auspicious Time</span>
+                            <span className="text-sm text-slate-300">{selectedPlace.bestTimeToVisit}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm text-slate-500">Darshan Timings</span>
+                            <span className="text-sm text-slate-300">{selectedPlace.timings}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="p-6 bg-slate-900/50 border border-white/5 rounded-2xl">
+                        <h4 className="text-lg font-medium text-white mb-4 flex items-center"><MapPin className="w-4 h-4 mr-2 text-blue-400"/> Pilgrimage Access</h4>
+                        <div className="space-y-4">
+                          {selectedPlace.howToReach.map((opt: any, i: number) => (
+                            <div key={i} className="flex flex-col">
+                              <span className="text-sm font-medium text-white capitalize">{opt.mode}</span>
+                              <span className="text-sm text-slate-400 mt-1">{opt.description}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );
