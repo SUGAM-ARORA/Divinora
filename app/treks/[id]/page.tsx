@@ -14,7 +14,7 @@ import { WeatherWidget } from '@/components/weather-widget';
 import { useAudio } from '@/components/audio-provider';
 import {
   ArrowLeft, Mountain, Clock, MapPin, Plane, Train, Bus, Footprints,
-  AlertTriangle, CheckCircle, Star, IndianRupee, Calendar, ThermometerSun, PersonStanding, Play
+  AlertTriangle, CheckCircle, Star, IndianRupee, Calendar, ThermometerSun, PersonStanding, Play, Sparkles, Compass
 } from 'lucide-react';
 
 const modeIcons: Record<string, { icon: any; color: string }> = {
