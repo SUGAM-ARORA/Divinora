@@ -10,8 +10,10 @@ import {
   Mountain, Map, Compass, ArrowRight, Sparkles, Star, ChevronRight,
   MapPin, Clock, Users, BookOpen, Heart, Globe, Flame, Play, ArrowDown
 } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { Navbar } from '@/components/navbar';
 import { WelcomeSplash } from '@/components/welcome-splash';
+const DivineAura = dynamic(() => import('@/components/divine-aura').then(m => m.DivineAura), { ssr: false });
 import { useAudio } from '@/components/audio-provider';
 import { SeasonalCalendar } from '@/components/seasonal-calendar';
 import { charDhamCircuit, jyotirlingaCircuit, shaktiPeethaCircuit, sacredTreks, indianStates } from '@/lib/data';
@@ -175,8 +177,13 @@ export default function Home() {
           </motion.div>
         </section>
 
+        {/* ========== DIVINE AURA 3D EXPERIENCE ========== */}
+        <section className="py-24 px-4 relative z-10 bg-[#020617] mt-8 max-w-[1400px] mx-auto">
+          <DivineAura />
+        </section>
+
         {/* ========== SACRED CIRCUITS (TOP 0.0001% UI) ========== */}
-        <section className="py-32 px-4 relative z-10 bg-[#020617]">
+        <section className="py-24 px-4 relative z-10 bg-[#020617]">
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
